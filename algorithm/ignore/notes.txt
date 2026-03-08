@@ -1,0 +1,90 @@
+Your starting value:
+
+15 = 1111 (binary)
+
+This means all four walls are closed.
+
+Wall bits (from the project spec):
+
+Bit	Direction	Value
+0	North	1
+1	East	2
+2	South	4
+3	West	8
+
+So:
+
+1111
+NWSE walls all closed
+1. The Expression
+
+You wrote:
+
+1111 &= ~ (1 << 1)
+
+Let's compute it step by step.
+
+2. Compute the Shift
+1 << 1
+
+Binary:
+
+0001 << 1 = 0010
+
+Decimal:
+
+2
+
+This is the east wall bit.
+
+3. Invert the Bit With ~
+~0010
+
+In binary (conceptually):
+
+...11111101
+
+The important part:
+
+~2 = -3
+
+But when used with &, it acts as a mask that clears the east bit.
+
+4. Apply the AND Operation
+
+Current cell:
+
+1111
+
+Mask:
+
+~0010
+
+Result:
+
+1111
+AND
+1101
+----
+1101
+
+Which is:
+
+13
+
+Exactly what you expected.
+
+5. Python Example
+cell = 15
+
+cell &= ~(1 << 1)
+
+print(cell)
+
+Output:
+
+13
+
+Binary:
+
+1101
