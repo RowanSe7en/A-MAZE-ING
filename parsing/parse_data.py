@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 
-# data = ["width", "height", "entry", "exit", "output_file", "perfect"]
 import sys
 
-def open_file():
-    with open("config.txt", "r") as f:
-        data_list = f.read()
-    return data_list
+def open_file(filename: str):
+    try:
+        with open(filename, "r") as f:
+            data_list = f.read().splitlines()
+        return data_list
+    except (FileNotFoundError, PermissionError):
+        print(f"Error: File '{filename}' not found.")
+        sys.exit(1)
 
 
 def parse_data(file_data: list) -> dict:
@@ -18,7 +21,7 @@ def parse_data(file_data: list) -> dict:
         
         if "=" not in line:
             print(f"Error in line {line_num}: Invalid format '{line}'. Use KEY=VALUE")
-            exit(1) 
+            sys.exit(1) 
 
         parts = line.split("=", 1)
         data_dict[parts[0].strip().lower()] = parts[1].strip()
@@ -31,13 +34,16 @@ def check_prop(dict_data: dict) -> dict:
         try:
             if key in ["width", "height"]:
                 data_parsed[key] = int(float(val))
-                if data_parsed[key] < 0:
+                if data_parsed[key] <= 0:
                     raise ValueError
             elif key in ["entry", "exit"]:
-                coords = [int(x.strip()) for x in val.split(',')]
-                if len(coords) != 2:
+                cords = [int(x.strip()) for x in val.split(',')]
+                if len(cords) != 2:
                     raise ValueError
-                data_parsed[key] = tuple(coords)
+                if cords[0] < 0 or cords[1] < 0:
+                    print(f"Error: {key} coordinates cannot be negative.")
+                    sys.exit(1)
+                data_parsed[key] = tuple(cords)
                 
             elif key == "output_file":
                 if not val.endswith(".txt"):
@@ -46,12 +52,13 @@ def check_prop(dict_data: dict) -> dict:
                 data_parsed[key] = val
                 
             elif key == "perfect":
+                if val.lower() not in ['true','false']:
+                    raise ValueError
                 data_parsed[key] = val.lower() == "true"
                 
         except Exception:
             print(f"Error: Invalid value for {key} = {val}")
             sys.exit(1)
-            
     return data_parsed
 
 def check_all_available(data: dict):
@@ -62,10 +69,7 @@ def check_all_available(data: dict):
         for item in missing:
             print(f"Missing mandatory key: {item}")
         sys.exit(1)
-
-
-
-f = open_file().split('\n')
-d = parse_data(f)
-a = check_prop(d)
-e = check_all_available(a)
+    if data["entry"] == data["exit"]:
+        print("Error: (entry == exit)")
+        sys.exit(1)
+    return data
