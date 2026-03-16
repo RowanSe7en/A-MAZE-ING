@@ -15,6 +15,7 @@ def main():
     parse = parse_data(f)
     check_proprety = check_prop(parse)
     require = check_all_available(check_proprety)
+    print(require)
     return require
 
 main()

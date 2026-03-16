@@ -29,7 +29,6 @@ def parse_data(file_data: list) -> dict:
 
 def check_prop(dict_data: dict) -> dict:
     data_parsed = {}
-    
     for key, val in dict_data.items():
         try:
             if key in ["width", "height"]:
@@ -50,19 +49,28 @@ def check_prop(dict_data: dict) -> dict:
                     print(f"Error: {val} must end with .txt")
                     sys.exit(1)
                 data_parsed[key] = val
-                
             elif key == "perfect":
                 if val.lower() not in ['true','false']:
                     raise ValueError
                 data_parsed[key] = val.lower() == "true"
-                
+            elif key == "seed":
+                try:
+                    data_parsed[key] = int(val)
+                except Exception:
+                    data_parsed[key] = None
+            elif key == "animation":
+                if val.lower() in ['true','false']:
+                    data_parsed[key] = val.lower() == "true"
+            elif key == "algorithm":
+                if val.lower() in ['dfs','bfs']:
+                    data_parsed[key] = val.lower()
         except Exception:
             print(f"Error: Invalid value for {key} = {val}")
             sys.exit(1)
     return data_parsed
 
 def check_all_available(data: dict):
-    required = ["width", "height", "entry", "exit", "output_file"]
+    required = ["width", "height", "entry", "exit", "output_file","perfect"]
     missing = [k for k in required if k not in data]
     
     if missing:
@@ -84,5 +92,4 @@ def check_all_available(data: dict):
     elif not (0 <= ex_x < w and 0 <= ex_y < h):
         print(f"Error: Exit {data['exit']} is outside the maze bounds.")
         sys.exit(1)
-    print(data)
     return data
