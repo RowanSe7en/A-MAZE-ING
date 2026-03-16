@@ -69,15 +69,23 @@ class MazeGenerator: #dfs
 
 width = 5
 height = 5
-seed = 22
+# seed = 22
+seed = 10
 
 p = MazeGenerator(width, height, seed)
 maze = p.generate()
+vis = p.visited
 
 for i in range(0, height):
     for j in range(0, width):
         print((maze[i][j]), end=" ")
     print()
+print()
+print()
+# for i in range(0, height):
+#     for j in range(0, width):
+#         print((vis[i][j]), end=" ")
+#     print()
 
 def bfs():
 
@@ -96,7 +104,7 @@ def bfs():
     }
 
     entry = (0, 0)
-    exit_ = (2, 3)
+    exit_ = (4, 3)
     en_y, en_x = entry
     ex_y, ex_x = exit_
 
@@ -108,15 +116,14 @@ def bfs():
 
     queue = [entry]
     parent = {}
-
     while queue:
-        
+        # print(queue)
         y, x = queue[0]
-        # print(y)
-        # print(x)
+        print(f"y {y}, x {x}")
         queue.pop(0)
-        
+        # print(queue)
 
+        
         if (y, x) == exit_:
             # print(x)
             # print(y)
@@ -125,16 +132,24 @@ def bfs():
         for dy, dx, wall, direc in directions:
             ny = y + dy
             nx = x + dx
-            # print(f"ny {ny}")
-            # print(f"nx {nx}")
+            # print(f"ny {ny}, nx {nx}, {direc}")
 
             if nx >= 0 and ny >= 0 and nx < width and ny < height:
+                # print("a")
                 if not visited[ny][nx]:
+                    # print("b")
                     if not (maze[y][x] & wall):
+                        # print("c")
+
                         # print("ttttttttt")
                         visited[ny][nx] = True
                         parent[(ny, nx)] = (y, x, direc)
                         queue.append((ny, nx))
+                        # print("------------------")
+        print(queue)
+        # print("########################3")
+    # for x in parent.items():
+    #     print(x)
 
         # print("hw")
     # print(x)
