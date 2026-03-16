@@ -1,12 +1,12 @@
 import random
 
-class MazeGenerator:
+class MazeGenerator: #dfs
 
     def __init__(self, width: int, height: int, seed: int | None = None):
         self.width = width
         self.height = height
         self.seed = seed
-        self.maze = [[0xF for _ in range(width)] for _ in range(height)]
+        self.maze = [[15 for _ in range(width)] for _ in range(height)]
         self.visited = [[False for _ in range(width)] for _ in range(height)]
 
     def generate(self):
@@ -34,38 +34,44 @@ class MazeGenerator:
         self.visited[y][x] = True
 
         stack = [(y, x)]
+        i = 1
 
         while stack:
-            x, y = stack[-1]
+            y, x = stack[-1]
 
             neighbors = []
 
             for dy, dx, wall in directions:
-                ny = y + dy
-                nx = x + dx
+                ny = y + dy # 0 + 1 = 1
+                nx = x + dx # 0 + 0 = 0
 
                 if 0 <= nx < self.width and 0 <= ny < self.height:
                     if not self.visited[ny][nx]:
                         neighbors.append((ny, nx, wall))
 
             if neighbors:
-                ny, nx, wall = random.choice(neighbors)
 
-                self.maze[y][x] &= ~wall
-                self.maze[ny][nx] &= ~opposite[wall]
+                ny, nx, wall = random.choice(neighbors)
+                # print(i)
+                # print(f"ny {ny}, nx {nx}, wall {wall}")
+                # print(f"y {y}, x {x}, wall {wall}\n")
+                self.maze[y][x] &= ~wall # break the current cell wall
+                self.maze[ny][nx] &= ~opposite[wall] # break the neibor cell wall
 
                 self.visited[ny][nx] = True
                 stack.append((ny, nx))
+                i += 1
 
             else:
                 stack.pop()
 
         return self.maze
 
-width = 9
+width = 5
 height = 5
+seed = 22
 
-p = MazeGenerator(width, height)
+p = MazeGenerator(width, height, seed)
 maze = p.generate()
 
 for i in range(0, height):
@@ -112,8 +118,8 @@ def bfs():
         
 
         if (y, x) == exit_:
-            print(x)
-            print(y)
+            # print(x)
+            # print(y)
             break
 
         for dy, dx, wall, direc in directions:
@@ -122,7 +128,7 @@ def bfs():
             # print(f"ny {ny}")
             # print(f"nx {nx}")
 
-            if nx >= 0 and ny >= 0 and nx <= width and ny <= height:
+            if nx >= 0 and ny >= 0 and nx < width and ny < height:
                 if not visited[ny][nx]:
                     if not (maze[y][x] & wall):
                         # print("ttttttttt")
@@ -131,8 +137,8 @@ def bfs():
                         queue.append((ny, nx))
 
         # print("hw")
-    print(x)
-    print(y)
+    # print(x)
+    # print(y)
 
 
 
