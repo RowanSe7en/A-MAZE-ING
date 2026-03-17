@@ -1,6 +1,6 @@
 import random
 
-class MazeGenerator: #dfs
+class MazeGenerator:
 
     directions = [
             (-1, 0, 1 << 0, "N"),  # North
@@ -24,7 +24,7 @@ class MazeGenerator: #dfs
         self.maze = [[0xF for _ in range(width)] for _ in range(height)]
         self.visited = [[False for _ in range(width)] for _ in range(height)]
 
-    def generate_maze(self):
+    def generate_maze(self): #dfs
 
         if self.seed is not None:
             random.seed(self.seed)
@@ -67,7 +67,7 @@ class MazeGenerator: #dfs
             else:
                 stack.pop()
 
-    def solve_maze(self, output_file):
+    def solve_maze(self, output_file): #bfs
 
         entry = (0, 0)
         exit_ = (4, 3)
