@@ -1,7 +1,7 @@
 import random
 
 entry = (0, 0)
-exit_ = (4, 2)
+exit_ = (14, 12)
 
 parents = {}
 path_list = []
@@ -30,7 +30,7 @@ class MazeGenerator:
         self.maze = [[0xF for _ in range(width)] for _ in range(height)]
         self.visited = [[False for _ in range(width)] for _ in range(height)]
 
-    def generate_maze(self): #dfs
+    def generate_perfect_maze(self): #dfs
 
         if self.seed is not None:
             random.seed(self.seed)
@@ -69,7 +69,49 @@ class MazeGenerator:
             
         return self.maze
 
-    def solve_maze(self, output_file): #bfs
+    def generate_non_perfect_maze(self): #dfs
+
+        if self.seed is not None:
+            random.seed(self.seed)
+
+        y, x = exit_
+        randomizer = [0, 1]
+        non_perfect_visited = [[False for _ in range(width)] for _ in range(height)]
+        non_perfect_visited[y][x] = True
+        stack = [(y, x)]
+
+        while stack:
+
+            y, x = stack[-1]
+
+            neighbors = []
+
+            for dy, dx, wall, dire in MazeGenerator.directions:
+
+                ny = y + dy
+                nx = x + dx
+
+                if 0 <= nx < self.width and 0 <= ny < self.height:
+                    random_choice = random.choice(randomizer)
+                    if not non_perfect_visited[ny][nx] and random_choice:
+                        neighbors.append((ny, nx, wall, dire))
+
+            if neighbors:
+
+                ny, nx, wall, dire = random.choice(neighbors)
+
+                self.maze[y][x] &= ~wall # break the current cell wall
+                self.maze[ny][nx] &= ~MazeGenerator.opposite[wall] # break the neibor cell wall
+
+                stack.append((ny, nx))
+                non_perfect_visited[ny][nx] = True
+
+            else:
+                stack.pop()
+            
+        return self.maze
+
+    def bfs_solve_maze(self, output_file): #bfs
 
         en_y, en_x = entry
         ex_y, ex_x = exit_
@@ -129,44 +171,23 @@ class MazeGenerator:
         return path_str
 
 
-width = 3
-height = 5
+width = 13
+height = 15
 # seed = 22
 seed = 10
 
 p = MazeGenerator(width, height, seed)
-maze = p.generate_maze()
+maze = p.generate_perfect_maze()
+maze = p.generate_non_perfect_maze()
 
 output_file = "output_maze.txt"
-path = p.solve_maze(output_file)
-vis = p.visited
-
-
-with open(output_file, 'r') as output_maze:
-    print(output_maze.read())
-
-# for i in range(0, height):
-#     for j in range(0, width):
-#         print(f"{maze[i][j]:b}", end=" ")
-#     print()
-# print()
-# print()
-# for i in range(0, height):
-#     for j in range(0, width):
-#         print((vis[i][j]), end=" ")
-#     print()
-
-# print(parents)
+path = p.bfs_solve_maze(output_file)
 
 path_coords = []
 
 for cell in parents.values():
-
     y, x, d = cell
     path_coords.append((y, x))
-
-print(path_list)
-
 
 def ascii_render():
 
@@ -207,7 +228,6 @@ def ascii_render():
                 content = "   "
             print(left + content, end="")
 
-        # Rightmost east wall
         right = "|" if maze[y][width - 1] & (1 << 1) else " "
         print(right)
 
@@ -265,4 +285,4 @@ def emoji_render():
     print("🧱")
 
 
-emoji_render()
+# emoji_render()
