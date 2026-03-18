@@ -1,7 +1,7 @@
 import random
 
 entry = (0, 0)
-exit_ = (14, 12)
+exit_ = (1, 2)
 
 parents = {}
 path_list = []
@@ -30,6 +30,62 @@ class MazeGenerator:
         self.maze = [[0xF for _ in range(width)] for _ in range(height)]
         self.visited = [[False for _ in range(width)] for _ in range(height)]
 
+    def where_is_42(self):
+        
+        ft_y = int((height / 2) - 2.5)
+        ft_x = int((width / 2) - 3.5)
+
+        # 4
+        ft_y -= 1
+        for i in range(3):
+            ft_y += 1
+            self.visited[ft_y][ft_x] = True
+            self.maze[ft_y][ft_x] += 1
+
+        for i in range(2):
+            ft_x += 1
+            self.visited[ft_y][ft_x] = True
+            self.maze[ft_y][ft_x] += 1
+
+        for i in range(2):
+            ft_y -= 1
+            self.visited[ft_y][ft_x] = True
+            self.maze[ft_y][ft_x] += 1
+
+        ft_y += 2
+        for i in range(2):
+            ft_y += 1
+            self.visited[ft_y][ft_x] = True
+            self.maze[ft_y][ft_x] += 1
+
+        # 2
+        ft_x += 5
+        
+        for i in range(3):
+            ft_x -= 1
+            self.visited[ft_y][ft_x] = True
+            self.maze[ft_y][ft_x] += 1
+
+        for i in range(2):
+            ft_y -= 1
+            self.visited[ft_y][ft_x] = True
+            self.maze[ft_y][ft_x] += 1
+
+        for i in range(2):
+            ft_x += 1
+            self.visited[ft_y][ft_x] = True
+            self.maze[ft_y][ft_x] += 1
+
+        for i in range(2):
+            ft_y -= 1
+            self.visited[ft_y][ft_x] = True
+            self.maze[ft_y][ft_x] += 1
+
+        for i in range(2):
+            ft_x -= 1
+            self.visited[ft_y][ft_x] = True
+            self.maze[ft_y][ft_x] += 1
+
     def generate_perfect_maze(self): #dfs
 
         if self.seed is not None:
@@ -51,7 +107,7 @@ class MazeGenerator:
                 nx = x + dx
 
                 if 0 <= nx < self.width and 0 <= ny < self.height:
-                    if not self.visited[ny][nx]:
+                    if not self.visited[ny][nx] and self.maze[ny][nx] != 16:
                         neighbors.append((ny, nx, wall, dire))
 
             if neighbors:
@@ -93,7 +149,7 @@ class MazeGenerator:
 
                 if 0 <= nx < self.width and 0 <= ny < self.height:
                     random_choice = random.choice(randomizer)
-                    if not non_perfect_visited[ny][nx] and random_choice:
+                    if not non_perfect_visited[ny][nx] and random_choice and self.maze[ny][nx] != 16:
                         neighbors.append((ny, nx, wall, dire))
 
             if neighbors:
@@ -242,14 +298,15 @@ class MazeGenerator:
         return path_str
 
 
-width = 13
-height = 15
+width = 9
+height = 7
 # seed = 22
 seed = 10
 
-p = MazeGenerator(width, height, seed)
+p = MazeGenerator(width, height)
+p.where_is_42()
 maze = p.generate_perfect_maze()
-maze = p.generate_non_perfect_maze()
+# maze = p.generate_non_perfect_maze()
 
 output_file = "output_maze.txt"
 path = p.dfs_solve_maze(output_file)
@@ -279,7 +336,7 @@ def ascii_render():
 
             print("+", end="")
 
-            if maze[y][x] & (1 << 0): 
+            if maze[y][x] & (1 << 0) or maze[y][x] == 16: 
                 print("---", end="")
             else:
                 print("   ", end="")
@@ -288,13 +345,15 @@ def ascii_render():
 
         for x in range(width):
 
-            left = "|" if maze[y][x] & (1 << 3) else " "  # West wall
+            left = "|" if (maze[y][x] & (1 << 3) or maze[y][x] == 16) else " "  # West wall
             if (y, x) == entry:
                 content = " S "
             elif (y, x) == exit_:
                 content = " E "
             elif (y, x) in path_coords:
                 content = " . "
+            elif maze[y][x] == 16:
+                content = " # "
             else:
                 content = "   "
             print(left + content, end="")
