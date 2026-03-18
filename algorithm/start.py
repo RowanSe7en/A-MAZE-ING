@@ -170,6 +170,77 @@ class MazeGenerator:
 
         return path_str
 
+    def dfs_solve_maze(self, output_file): #dfs
+
+        en_y, en_x = entry
+        ex_y, ex_x = exit_
+
+        visited = [[False for _ in range(width)] for _ in range(height)]
+        visited[en_y][en_x] = True
+
+        queue = [entry]
+
+        while queue:
+
+            y, x = queue[-1]
+
+            neighbors = []
+
+
+            if (y, x) == exit_:
+                break
+
+            for dy, dx, wall, direc in MazeGenerator.directions:
+
+                ny = y + dy
+                nx = x + dx
+
+                if nx >= 0 and ny >= 0 and nx < width and ny < height:
+
+                    if not visited[ny][nx]:
+
+                        if not (self.maze[y][x] & wall):
+
+                          neighbors.append((ny, nx, wall, direc))
+
+            if neighbors:
+
+                random_true = random.Random()
+                ny, nx, wall, direc = random_true.choice(neighbors)
+
+                visited[ny][nx] = True
+                parents[(ny, nx)] = (y, x, direc)
+                queue.append((ny, nx))
+
+            else:
+                queue.pop()
+
+        global path_list
+
+        current = exit_
+
+        while current != entry:
+
+            py, px, direction = parents[current]
+            path_list.append(direction)
+            current = (py, px)
+
+        path_list.reverse()
+        path_str = "".join(path_list)
+
+        with open(output_file, 'w') as output_maze:
+
+            for row in self.maze:
+
+                output_maze.write("".join(f"{cell:X}" for cell in row))
+                output_maze.write("\n")
+
+            output_maze.write(f"\n{en_y}, {en_x}\n")
+            output_maze.write(f"{ex_y}, {ex_x}\n")
+            output_maze.write(path_str)
+
+        return path_str
+
 
 width = 13
 height = 15
@@ -181,7 +252,7 @@ maze = p.generate_perfect_maze()
 maze = p.generate_non_perfect_maze()
 
 output_file = "output_maze.txt"
-path = p.bfs_solve_maze(output_file)
+path = p.dfs_solve_maze(output_file)
 
 path_coords = []
 
