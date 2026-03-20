@@ -379,6 +379,12 @@ def emoji_render():
 
     path_coords.add(entry)
 
+    for i in range(1, 10):
+        print(f"{i}\uFE0F\u20E3", end=" ")
+    for i in range(0, 6):
+        print(f"{i}\uFE0F\u20E3", end=" ")
+    print()
+
     for y in range(height):
 
         print("🧱", end="")
@@ -387,27 +393,32 @@ def emoji_render():
             if maze[y][x] & (1 << 0):
                 print("🧱🧱", end="")
             else:
-                print("⬜", end="")
-        print("🧱")
+                if (y, x) in path_coords and ((y - 1, x) in path_coords or (y - 1, x) == entry):
+                    print("🔳🧱", end="")
+                else:
+                    print("⬜🧱", end="")
+        print("")
 
         for x in range(width):
             # if x == 0:
             #     print("🧱", end="")
-            if (maze[y][x] == 15 or maze[y][x] & 1 << 3):
+            if (y, x) in path_coords and ((y, x - 1) in path_coords or (y, x - 1) == entry) and not maze[y][x] & 1 << 3:
+                left = "🔳"
+            elif (maze[y][x] == 15 or maze[y][x] & 1 << 3):
                 left = "🧱"
             elif (maze[y][x] == 16):
                 left = "🟥"
             else:
-                left = ""
+                left = "⬜"
 
             if (y, x) == entry:
                 content = "🏂"
             elif (y, x) == exit_:
-                content = "🚗🚗"
+                content = "🚗"
             elif (y, x) in path_coords:
-                content = "🔳🔳"
+                content = "🔳"
             else:
-                content = "⬜⬜"
+                content = "⬜"
 
             print(left + content, end="")
 
