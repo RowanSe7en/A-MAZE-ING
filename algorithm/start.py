@@ -451,9 +451,6 @@ def ansi_render():
     BLUE    = "\033[101m  \033[0m"  # visited (red heat)
     MAGENTA = "\033[105m  \033[0m"  # exit (pink/purple core)
 
-    def get_block(color):
-        return color
-
     path_coords = set()
     cur = exit_
 
