@@ -1,7 +1,7 @@
 import random
 
 entry = (0, 0)
-exit_ = (6, 7)
+exit_ = (16, 17)
 
 parents = {}
 path_list = []
@@ -308,8 +308,8 @@ class MazeGenerator:
         return path_str
 
 
-width = 9
-height = 7
+width = 19
+height = 17
 # seed = 22
 seed = 10
 
