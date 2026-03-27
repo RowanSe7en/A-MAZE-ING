@@ -1,520 +1,521 @@
 import random
+def run(data: dict):
+    entry = data["entry"]
+    exit_ = data["exit"]
 
-entry = (0, 0)
-exit_ = (16, 17)
+    parents = {}
+    path_list = []
+    ft_coords = []
 
-parents = {}
-path_list = []
-ft_coords = []
+    class MazeGenerator:
 
-class MazeGenerator:
+        directions = [
+                (-1, 0, 1 << 0, "N"),  # North
+                (0, 1, 1 << 1, "E"),   # East
+                (1, 0, 1 << 2, "S"),   # South
+                (0, -1, 1 << 3, "W")   # West
+            ]
 
-    directions = [
-            (-1, 0, 1 << 0, "N"),  # North
-            (0, 1, 1 << 1, "E"),   # East
-            (1, 0, 1 << 2, "S"),   # South
-            (0, -1, 1 << 3, "W")   # West
-        ]
+        opposite = {
+            1 << 0: 1 << 2,
+            1 << 1: 1 << 3,
+            1 << 2: 1 << 0,
+            1 << 3: 1 << 1
+        }
 
-    opposite = {
-        1 << 0: 1 << 2,
-        1 << 1: 1 << 3,
-        1 << 2: 1 << 0,
-        1 << 3: 1 << 1
-    }
+        def __init__(self):
 
-    def __init__(self, width: int, height: int, seed: int | None = None):
+            self.width = data["width"]
+            self.height = data["height"]
+            self.seed = data["seed"]
+            self.maze = [[0xF for _ in range(self.width)] for _ in range(self.height)]
+            self.visited = [[False for _ in range(self.width)] for _ in range(self.height)]
 
-        self.width = width
-        self.height = height
-        self.seed = seed
-        self.maze = [[0xF for _ in range(width)] for _ in range(height)]
-        self.visited = [[False for _ in range(width)] for _ in range(height)]
-
-    def where_is_42(self):
-        
-        ft_y = int((height / 2) - 2.5)
-        ft_x = int((width / 2) - 3.5)
-
-        # 4
-        ft_y -= 1
-        for i in range(3):
-            ft_y += 1
-            self.visited[ft_y][ft_x] = True
-            self.maze[ft_y][ft_x] += 1
-            ft_coords.append((ft_y, ft_x))
-
-        for i in range(2):
-            ft_x += 1
-            self.visited[ft_y][ft_x] = True
-            self.maze[ft_y][ft_x] += 1
-            ft_coords.append((ft_y, ft_x))
-
-        for i in range(2):
-            ft_y -= 1
-            self.visited[ft_y][ft_x] = True
-            self.maze[ft_y][ft_x] += 1
-            ft_coords.append((ft_y, ft_x))
-
-        ft_y += 2
-        for i in range(2):
-            ft_y += 1
-            self.visited[ft_y][ft_x] = True
-            self.maze[ft_y][ft_x] += 1
-            ft_coords.append((ft_y, ft_x))
-
-        # 2
-        ft_x += 5
-        
-        for i in range(3):
-            ft_x -= 1
-            self.visited[ft_y][ft_x] = True
-            self.maze[ft_y][ft_x] += 1
-            ft_coords.append((ft_y, ft_x))
-
-        for i in range(2):
-            ft_y -= 1
-            self.visited[ft_y][ft_x] = True
-            self.maze[ft_y][ft_x] += 1
-            ft_coords.append((ft_y, ft_x))
-
-        for i in range(2):
-            ft_x += 1
-            self.visited[ft_y][ft_x] = True
-            self.maze[ft_y][ft_x] += 1
-            ft_coords.append((ft_y, ft_x))
-
-        for i in range(2):
-            ft_y -= 1
-            self.visited[ft_y][ft_x] = True
-            self.maze[ft_y][ft_x] += 1
-            ft_coords.append((ft_y, ft_x))
-
-        for i in range(2):
-            ft_x -= 1
-            self.visited[ft_y][ft_x] = True
-            self.maze[ft_y][ft_x] += 1
-            ft_coords.append((ft_y, ft_x))
-
-    def generate_perfect_maze(self): #dfs
-
-        if self.seed is not None:
-            random.seed(self.seed)
-
-        y, x = 0, 0
-        self.visited[y][x] = True
-        stack = [(y, x)]
-
-        while stack:
-
-            y, x = stack[-1]
-
-            neighbors = []
-
-            for dy, dx, wall, dire in MazeGenerator.directions:
-
-                ny = y + dy
-                nx = x + dx
-
-                if 0 <= nx < self.width and 0 <= ny < self.height:
-                    if not self.visited[ny][nx] and self.maze[ny][nx] != 16:
-                        neighbors.append((ny, nx, wall, dire))
-
-            if neighbors:
-
-                ny, nx, wall, dire = random.choice(neighbors)
-
-                self.maze[y][x] &= ~wall # break the current cell wall
-                self.maze[ny][nx] &= ~MazeGenerator.opposite[wall] # break the neibor cell wall
-
-                stack.append((ny, nx))
-                self.visited[ny][nx] = True
-
-            else:
-                stack.pop()
+        def where_is_42(self):
             
-        return self.maze
+            ft_y = int((self.height / 2) - 2.5)
+            ft_x = int((self.width / 2) - 3.5)
 
-    def generate_non_perfect_maze(self): #dfs
+            # 4
+            ft_y -= 1
+            for _ in range(3):
+                ft_y += 1
+                self.visited[ft_y][ft_x] = True
+                self.maze[ft_y][ft_x] += 1
+                ft_coords.append((ft_y, ft_x))
 
-        if self.seed is not None:
-            random.seed(self.seed)
+            for _ in range(2):
+                ft_x += 1
+                self.visited[ft_y][ft_x] = True
+                self.maze[ft_y][ft_x] += 1
+                ft_coords.append((ft_y, ft_x))
 
-        y, x = exit_
-        randomizer = [0, 1]
-        non_perfect_visited = [[False for _ in range(width)] for _ in range(height)]
-        non_perfect_visited[y][x] = True
-        stack = [(y, x)]
+            for _ in range(2):
+                ft_y -= 1
+                self.visited[ft_y][ft_x] = True
+                self.maze[ft_y][ft_x] += 1
+                ft_coords.append((ft_y, ft_x))
 
-        while stack:
+            ft_y += 2
+            for _ in range(2):
+                ft_y += 1
+                self.visited[ft_y][ft_x] = True
+                self.maze[ft_y][ft_x] += 1
+                ft_coords.append((ft_y, ft_x))
 
-            y, x = stack[-1]
-
-            neighbors = []
-
-            for dy, dx, wall, dire in MazeGenerator.directions:
-
-                ny = y + dy
-                nx = x + dx
-
-                if 0 <= nx < self.width and 0 <= ny < self.height:
-                    random_choice = random.choice(randomizer)
-                    if not non_perfect_visited[ny][nx] and random_choice and self.maze[ny][nx] != 16:
-                        neighbors.append((ny, nx, wall, dire))
-
-            if neighbors:
-
-                ny, nx, wall, dire = random.choice(neighbors)
-
-                self.maze[y][x] &= ~wall # break the current cell wall
-                self.maze[ny][nx] &= ~MazeGenerator.opposite[wall] # break the neibor cell wall
-
-                stack.append((ny, nx))
-                non_perfect_visited[ny][nx] = True
-
-            else:
-                stack.pop()
+            # 2
+            ft_x += 5
             
-        return self.maze
+            for _ in range(3):
+                ft_x -= 1
+                self.visited[ft_y][ft_x] = True
+                self.maze[ft_y][ft_x] += 1
+                ft_coords.append((ft_y, ft_x))
 
-    def bfs_solve_maze(self, output_file): #bfs
+            for _ in range(2):
+                ft_y -= 1
+                self.visited[ft_y][ft_x] = True
+                self.maze[ft_y][ft_x] += 1
+                ft_coords.append((ft_y, ft_x))
 
-        en_y, en_x = entry
-        ex_y, ex_x = exit_
+            for _ in range(2):
+                ft_x += 1
+                self.visited[ft_y][ft_x] = True
+                self.maze[ft_y][ft_x] += 1
+                ft_coords.append((ft_y, ft_x))
 
-        visited = [[False for _ in range(width)] for _ in range(height)]
-        visited[en_y][en_x] = True
+            for _ in range(2):
+                ft_y -= 1
+                self.visited[ft_y][ft_x] = True
+                self.maze[ft_y][ft_x] += 1
+                ft_coords.append((ft_y, ft_x))
 
-        queue = [entry]
+            for _ in range(2):
+                ft_x -= 1
+                self.visited[ft_y][ft_x] = True
+                self.maze[ft_y][ft_x] += 1
+                ft_coords.append((ft_y, ft_x))
 
-        while queue:
+        def generate_perfect_maze(self): #dfs
 
-            y, x = queue[0]
-            queue.pop(0)
+            if self.seed is not None:
+                random.seed(self.seed)
 
-            if (y, x) == exit_:
-                break
+            y, x = 0, 0
+            self.visited[y][x] = True
+            stack = [(y, x)]
 
-            for dy, dx, wall, direc in MazeGenerator.directions:
+            while stack:
 
-                ny = y + dy
-                nx = x + dx
+                y, x = stack[-1]
 
-                if nx >= 0 and ny >= 0 and nx < width and ny < height:
+                neighbors = []
 
-                    if not visited[ny][nx]:
+                for dy, dx, wall, dire in MazeGenerator.directions:
 
-                        if not (self.maze[y][x] & wall):
+                    ny = y + dy
+                    nx = x + dx
 
-                            visited[ny][nx] = True
-                            parents[(ny, nx)] = (y, x, direc)
-                            queue.append((ny, nx))
+                    if 0 <= nx < self.width and 0 <= ny < self.height:
+                        if not self.visited[ny][nx] and self.maze[ny][nx] != 16:
+                            neighbors.append((ny, nx, wall, dire))
 
-        global path_list
+                if neighbors:
 
-        current = exit_
+                    ny, nx, wall, dire = random.choice(neighbors)
 
-        while current != entry:
+                    self.maze[y][x] &= ~wall # break the current cell wall
+                    self.maze[ny][nx] &= ~MazeGenerator.opposite[wall] # break the neibor cell wall
 
-            py, px, direction = parents[current]
-            path_list.append(direction)
-            current = (py, px)
+                    stack.append((ny, nx))
+                    self.visited[ny][nx] = True
 
-        path_list.reverse()
-        path_str = "".join(path_list)
+                else:
+                    stack.pop()
+                
+            return self.maze
 
-        with open(output_file, 'w') as output_maze:
+        def generate_non_perfect_maze(self): #dfs
 
-            for row in self.maze:
+            if self.seed is not None:
+                random.seed(self.seed + 1)
 
-                output_maze.write("".join(f"{cell:X}" for cell in row))
-                output_maze.write("\n")
+            y, x = exit_
+            randomizer = [0, 1]
+            non_perfect_visited = [[False for _ in range(self.width)] for _ in range(self.height)]
+            non_perfect_visited[y][x] = True
+            stack = [(y, x)]
 
-            output_maze.write(f"\n{en_y}, {en_x}\n")
-            output_maze.write(f"{ex_y}, {ex_x}\n")
-            output_maze.write(path_str)
+            while stack:
 
-        return path_str
+                y, x = stack[-1]
 
-    def dfs_solve_maze(self, output_file): #dfs
+                neighbors = []
 
-        en_y, en_x = entry
-        ex_y, ex_x = exit_
+                for dy, dx, wall, dire in MazeGenerator.directions:
 
-        visited = [[False for _ in range(width)] for _ in range(height)]
-        visited[en_y][en_x] = True
+                    ny = y + dy
+                    nx = x + dx
 
-        queue = [entry]
+                    if 0 <= nx < self.width and 0 <= ny < self.height:
+                        random_choice = random.choice(randomizer)
+                        if not non_perfect_visited[ny][nx] and random_choice and self.maze[ny][nx] != 16:
+                            neighbors.append((ny, nx, wall, dire))
 
-        while queue:
+                if neighbors:
 
-            y, x = queue[-1]
+                    ny, nx, wall, dire = random.choice(neighbors)
 
-            neighbors = []
+                    self.maze[y][x] &= ~wall # break the current cell wall
+                    self.maze[ny][nx] &= ~MazeGenerator.opposite[wall] # break the neibor cell wall
 
+                    stack.append((ny, nx))
+                    non_perfect_visited[ny][nx] = True
 
-            if (y, x) == exit_:
-                break
+                else:
+                    stack.pop()
+                
+            return self.maze
 
-            for dy, dx, wall, direc in MazeGenerator.directions:
+        def bfs_solve_maze(self, output_file): #bfs
 
-                ny = y + dy
-                nx = x + dx
+            en_y, en_x = entry
+            ex_y, ex_x = exit_
 
-                if nx >= 0 and ny >= 0 and nx < width and ny < height:
+            visited = [[False for _ in range(self.width)] for _ in range(self.height)]
+            visited[en_y][en_x] = True
 
-                    if not visited[ny][nx]:
+            queue = [entry]
 
-                        if not (self.maze[y][x] & wall):
+            while queue:
 
-                          neighbors.append((ny, nx, wall, direc))
+                y, x = queue[0]
+                queue.pop(0)
 
-            if neighbors:
+                if (y, x) == exit_:
+                    break
 
-                random_true = random.Random()
-                ny, nx, wall, direc = random_true.choice(neighbors)
+                for dy, dx, wall, direc in MazeGenerator.directions:
 
-                visited[ny][nx] = True
-                parents[(ny, nx)] = (y, x, direc)
-                queue.append((ny, nx))
+                    ny = y + dy
+                    nx = x + dx
 
-            else:
-                queue.pop()
+                    if nx >= 0 and ny >= 0 and nx < self.width and ny < self.height:
 
-        global path_list
+                        if not visited[ny][nx]:
 
-        current = exit_
+                            if not (self.maze[y][x] & wall):
 
-        while current != entry:
+                                visited[ny][nx] = True
+                                parents[(ny, nx)] = (y, x, direc)
+                                queue.append((ny, nx))
 
-            py, px, direction = parents[current]
-            path_list.append(direction)
-            current = (py, px)
+            nonlocal path_list
 
-        path_list.reverse()
-        path_str = "".join(path_list)
+            current = exit_
 
-        with open(output_file, 'w') as output_maze:
+            while current != entry:
 
-            for row in self.maze:
+                py, px, direction = parents[current]
+                path_list.append(direction)
+                current = (py, px)
 
-                output_maze.write("".join(f"{cell:X}" for cell in row))
-                output_maze.write("\n")
+            path_list.reverse()
+            path_str = "".join(path_list)
 
-            output_maze.write(f"\n{en_y}, {en_x}\n")
-            output_maze.write(f"{ex_y}, {ex_x}\n")
-            output_maze.write(path_str)
+            with open(output_file, 'w') as output_maze:
 
-        return path_str
+                for row in self.maze:
 
+                    output_maze.write("".join(f"{cell:X}" for cell in row))
+                    output_maze.write("\n")
 
-width = 19
-height = 17
-# seed = 22
-seed = 10
+                output_maze.write(f"\n{en_y}, {en_x}\n")
+                output_maze.write(f"{ex_y}, {ex_x}\n")
+                output_maze.write(path_str)
 
-p = MazeGenerator(width, height, seed)
-p.where_is_42()
-maze = p.generate_perfect_maze()
-# maze = p.generate_non_perfect_maze()
+            return path_str
 
-output_file = "output_maze.txt"
-path = p.dfs_solve_maze(output_file)
+        def dfs_solve_maze(self, output_file): #dfs
 
-path_coords = []
+            en_y, en_x = entry
+            ex_y, ex_x = exit_
 
-for cell in parents.values():
-    y, x, d = cell
-    path_coords.append((y, x))
+            visited = [[False for _ in range(self.width)] for _ in range(self.height)]
+            visited[en_y][en_x] = True
 
-def ascii_render():
+            queue = [entry]
 
-    path_coords = set()
-    cur = exit_
+            while queue:
 
-    while cur in parents:
+                y, x = queue[-1]
 
-        py, px, _ = parents[cur]
-        path_coords.add(cur)
-        cur = (py, px)
+                neighbors = []
 
-    path_coords.add(entry)
 
-    for y in range(height):
+                if (y, x) == exit_:
+                    break
+
+                for dy, dx, wall, direc in MazeGenerator.directions:
+
+                    ny = y + dy
+                    nx = x + dx
+
+                    if nx >= 0 and ny >= 0 and nx < self.width and ny < self.height:
+
+                        if not visited[ny][nx]:
+
+                            if not (self.maze[y][x] & wall):
+
+                                neighbors.append((ny, nx, wall, direc))
+
+                if neighbors:
+
+                    random_true = random.Random()
+                    ny, nx, wall, direc = random_true.choice(neighbors)
+
+                    visited[ny][nx] = True
+                    parents[(ny, nx)] = (y, x, direc)
+                    queue.append((ny, nx))
+
+                else:
+                    queue.pop()
+
+            nonlocal path_list
+
+            current = exit_
+
+            while current != entry:
+
+                py, px, direction = parents[current]
+                path_list.append(direction)
+                current = (py, px)
+
+            path_list.reverse()
+            path_str = "".join(path_list)
+
+            with open(output_file, 'w') as output_maze:
+
+                for row in self.maze:
+
+                    output_maze.write("".join(f"{cell:X}" for cell in row))
+                    output_maze.write("\n")
+
+                output_maze.write(f"\n{en_y}, {en_x}\n")
+                output_maze.write(f"{ex_y}, {ex_x}\n")
+                output_maze.write(path_str)
+
+            return path_str
+
+
+
+
+    p = MazeGenerator()
+    p.where_is_42()
+    maze = p.generate_perfect_maze()
+    # if not data["perfect"]:
+    maze = p.generate_non_perfect_maze()
+
+    output_file = data["output_file"]
+    if data["solve"] == "dfs":
+        path = p.dfs_solve_maze(output_file)
+    elif data["solve"] == "bfs":
+        path = p.bfs_solve_maze(output_file)
+
+    path_coords = []
+
+    for cell in parents.values():
+        y, x, d = cell
+        path_coords.append((y, x))
+
+    def ascii_render(width, height):
+
+        path_coords = set()
+        cur = exit_
+
+        while cur in parents:
+
+            py, px, _ = parents[cur]
+            path_coords.add(cur)
+            cur = (py, px)
+
+        path_coords.add(entry)
+
+        for y in range(height):
+
+            for x in range(width):
+
+                print("+", end="")
+
+                if maze[y][x] & (1 << 0) or maze[y][x] == 16: 
+                    print("---", end="")
+                else:
+                    print("   ", end="")
+
+            print("+") 
+
+            for x in range(width):
+
+                left = "|" if (maze[y][x] & (1 << 3) or maze[y][x] == 16) else " "  # West wall
+                if (y, x) == entry:
+                    content = " S "
+                elif (y, x) == exit_:
+                    content = " E "
+                elif (y, x) in path_coords:
+                    content = " . "
+                elif maze[y][x] == 16:
+                    content = " # "
+                else:
+                    content = "   "
+                print(left + content, end="")
+
+            right = "|" if maze[y][width - 1] & (1 << 1) else " "
+            print(right)
 
         for x in range(width):
+            print("+---", end="")
 
-            print("+", end="")
+        print("+")
 
-            if maze[y][x] & (1 << 0) or maze[y][x] == 16: 
-                print("---", end="")
-            else:
-                print("   ", end="")
+    # ascii_render(data["width"], data["height"])
 
-        print("+") 
+    def emoji_render(width, height):
+        path_coords = set()
+        cur = exit_
 
-        for x in range(width):
+        while cur in parents:
+            py, px, _ = parents[cur]
+            path_coords.add(cur)
+            cur = (py, px)
 
-            left = "|" if (maze[y][x] & (1 << 3) or maze[y][x] == 16) else " "  # West wall
-            if (y, x) == entry:
-                content = " S "
-            elif (y, x) == exit_:
-                content = " E "
-            elif (y, x) in path_coords:
-                content = " . "
-            elif maze[y][x] == 16:
-                content = " # "
-            else:
-                content = "   "
-            print(left + content, end="")
+        path_coords.add(entry)
 
-        right = "|" if maze[y][width - 1] & (1 << 1) else " "
-        print(right)
+        for y in range(height):
+            print("⬛", end="")
 
-    for x in range(width):
-        print("+---", end="")
+            for x in range(width):
+                if maze[y][x] & 1 or ((y, x) in ft_coords and maze[y - 1][x] != 16):
+                    print("⬛⬛", end="")
+                else:
+                    content = "⬛"
+                    if maze[y][x] == 16:
+                        left = "🟦"
+                    elif (y, x) in path_coords and ((y > 0 and (y - 1, x) in path_coords) or (y - 1, x) == entry):
+                        left = "🟩"
+                    else:
+                        left = "⬜"
 
-    print("+")
+                    print(left + content, end="")
+            print("")
 
-ascii_render()
-
-def emoji_render():
-    path_coords = set()
-    cur = exit_
-
-    while cur in parents:
-        py, px, _ = parents[cur]
-        path_coords.add(cur)
-        cur = (py, px)
-
-    path_coords.add(entry)
-
-    for y in range(height):
-        print("⬛", end="")
-
-        for x in range(width):
-            if maze[y][x] & 1 or ((y, x) in ft_coords and maze[y - 1][x] != 16):
-                print("⬛⬛", end="")
-            else:
-                content = "⬛"
-                if maze[y][x] == 16:
-                    left = "🟦"
-                elif (y, x) in path_coords and ((y > 0 and (y - 1, x) in path_coords) or (y - 1, x) == entry):
+            for x in range(width):
+                if (y, x) in path_coords and (x > 0 and (y, x - 1) in path_coords or (y, x - 1) == entry) and not maze[y][x] & 1 << 3:
                     left = "🟩"
+                elif maze[y][x] == 16 and maze[y][x - 1] == 16:
+                    left = "🟦"
+                elif maze[y][x] & 1 << 3 or maze[y][x] & 1 << 4:
+                    left = "⬛"
                 else:
                     left = "⬜"
 
+                if (y, x) == entry:
+                    content = "🟦"
+                elif (y, x) == exit_:
+                    content = "🟪"
+                elif (y, x) in path_coords:
+                    content = "🟩"
+                elif maze[y][x] == 16:
+                    content = "🟦"
+                else:
+                    content = "⬜"
+
                 print(left + content, end="")
-        print("")
+
+            right = "⬛" if maze[y][width - 1] & (1 << 1) else ""
+            print(right)
 
         for x in range(width):
-            if (y, x) in path_coords and (x > 0 and (y, x - 1) in path_coords or (y, x - 1) == entry) and not maze[y][x] & 1 << 3:
-                left = "🟩"
-            elif maze[y][x] == 16 and maze[y][x - 1] == 16:
-                left = "🟦"
-            elif maze[y][x] & 1 << 3 or maze[y][x] & 1 << 4:
-                left = "⬛"
+            if maze[height - 1][x] & (1 << 2):
+                print("⬛⬛", end="")
             else:
-                left = "⬜"
-
-            if (y, x) == entry:
-                content = "🟦"
-            elif (y, x) == exit_:
-                content = "🟪"
-            elif (y, x) in path_coords:
-                content = "🟩"
-            elif maze[y][x] == 16:
-                content = "🟦"
-            else:
-                content = "⬜"
-
-            print(left + content, end="")
-
-        right = "⬛" if maze[y][width - 1] & (1 << 1) else ""
-        print(right)
-
-    for x in range(width):
-        if maze[height - 1][x] & (1 << 2):
-            print("⬛⬛", end="")
-        else:
-            print("⬜⬜", end="")
-    print("⬛")
+                print("⬜⬜", end="")
+        print("⬛")
 
 
-emoji_render()
+    # emoji_render(data["width"], data["height"])
 
-def ansi_render():
+    def ansi_render(width, height):
 
-    BLACK   = "\033[40m  \033[0m"   # walls
-    WHITE   = "\033[100m  \033[0m"  # floor (dark gray)
-    GREEN   = "\033[103m  \033[0m"  # path (yellow = lava glow)
-    BLUE    = "\033[101m  \033[0m"  # visited (red heat)
-    MAGENTA = "\033[105m  \033[0m"  # exit (pink/purple core)
+        BLACK   = "\033[40m  \033[0m"   # walls
+        WHITE   = "\033[100m  \033[0m"  # floor (dark gray)
+        GREEN   = "\033[103m  \033[0m"  # path (yellow = lava glow)
+        BLUE    = "\033[101m  \033[0m"  # visited (red heat)
+        MAGENTA = "\033[105m  \033[0m"  # exit (pink/purple core)
 
-    path_coords = set()
-    cur = exit_
+        path_coords = set()
+        cur = exit_
 
-    while cur in parents:
-        py, px, _ = parents[cur]
-        path_coords.add(cur)
-        cur = (py, px)
+        while cur in parents:
+            py, px, _ = parents[cur]
+            path_coords.add(cur)
+            cur = (py, px)
 
-    path_coords.add(entry)
+        path_coords.add(entry)
 
-    for y in range(height):
-        print(BLACK, end="")
+        for y in range(height):
+            print(BLACK, end="")
 
-        for x in range(width):
-            if maze[y][x] & 1 or ((y, x) in ft_coords and maze[y - 1][x] != 16):
-                print(BLACK + BLACK, end="")
-            else:
-                if maze[y][x] == 16:
-                    left = BLUE
-                elif (y, x) in path_coords and (
-                    (y > 0 and (y - 1, x) in path_coords) or (y - 1, x) == entry
+            for x in range(width):
+                if maze[y][x] & 1 or ((y, x) in ft_coords and maze[y - 1][x] != 16):
+                    print(BLACK + BLACK, end="")
+                else:
+                    if maze[y][x] == 16:
+                        left = BLUE
+                    elif (y, x) in path_coords and (
+                        (y > 0 and (y - 1, x) in path_coords) or (y - 1, x) == entry
+                    ):
+                        left = GREEN
+                    else:
+                        left = WHITE
+
+                    print(left + BLACK, end="")
+            print()
+
+            for x in range(width):
+                if (
+                    (y, x) in path_coords
+                    and (x > 0 and ((y, x - 1) in path_coords or (y, x - 1) == entry))
+                    and not maze[y][x] & (1 << 3)
                 ):
                     left = GREEN
+                elif maze[y][x] == 16 and maze[y][x - 1] == 16:
+                    left = BLUE
+                elif maze[y][x] & (1 << 3) or maze[y][x] & (1 << 4):
+                    left = BLACK
                 else:
                     left = WHITE
 
-                print(left + BLACK, end="")
-        print()
+                if (y, x) == entry:
+                    content = BLUE
+                elif (y, x) == exit_:
+                    content = MAGENTA
+                elif (y, x) in path_coords:
+                    content = GREEN
+                elif maze[y][x] == 16:
+                    content = BLUE
+                else:
+                    content = WHITE
+
+                print(left + content, end="")
+
+            right = BLACK if maze[y][width - 1] & (1 << 1) else ""
+            print(right)
 
         for x in range(width):
-            if (
-                (y, x) in path_coords
-                and (x > 0 and ((y, x - 1) in path_coords or (y, x - 1) == entry))
-                and not maze[y][x] & (1 << 3)
-            ):
-                left = GREEN
-            elif maze[y][x] == 16 and maze[y][x - 1] == 16:
-                left = BLUE
-            elif maze[y][x] & (1 << 3) or maze[y][x] & (1 << 4):
-                left = BLACK
+            if maze[height - 1][x] & (1 << 2):
+                print(BLACK + BLACK, end="")
             else:
-                left = WHITE
+                print(WHITE + WHITE, end="")
+        print(BLACK)
 
-            if (y, x) == entry:
-                content = BLUE
-            elif (y, x) == exit_:
-                content = MAGENTA
-            elif (y, x) in path_coords:
-                content = GREEN
-            elif maze[y][x] == 16:
-                content = BLUE
-            else:
-                content = WHITE
-
-            print(left + content, end="")
-
-        right = BLACK if maze[y][width - 1] & (1 << 1) else ""
-        print(right)
-
-    for x in range(width):
-        if maze[height - 1][x] & (1 << 2):
-            print(BLACK + BLACK, end="")
-        else:
-            print(WHITE + WHITE, end="")
-    print(BLACK)
-
-ansi_render()
+    ansi_render(data["width"], data["height"])

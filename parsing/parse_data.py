@@ -61,9 +61,11 @@ def check_prop(dict_data: dict) -> dict:
             elif key == "animation":
                 if val.lower() in ['true','false']:
                     data_parsed[key] = val.lower() == "true"
-            elif key == "algorithm":
+            elif key == "solve":
                 if val.lower() in ['dfs','bfs']:
                     data_parsed[key] = val.lower()
+                else:
+                    data_parsed[key] = "dfs"
         except Exception:
             print(f"Error: Invalid value for {key} = {val}")
             sys.exit(1)
@@ -72,7 +74,7 @@ def check_prop(dict_data: dict) -> dict:
 def check_all_available(data: dict):
     required = ["width", "height", "entry", "exit", "output_file","perfect"]
     missing = [k for k in required if k not in data]
-    
+
     if missing:
         for item in missing:
             print(f"Missing mandatory key: {item}")

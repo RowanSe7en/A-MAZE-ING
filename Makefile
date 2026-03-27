@@ -4,11 +4,11 @@ MAIN = a_maze_ing.py
 CONFIG = config.txt
 
 
-all: install run
+all: run
 
 
-install:
-	$(PIP) install -r requirements.txt
+# install:
+# 	$(PIP) install -r requirements.txt
 
 
 run:
@@ -28,4 +28,4 @@ lint:
 	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
 
-.PHONY: all install run clean debug
+.PHONY: all run clean debug

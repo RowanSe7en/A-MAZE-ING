@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import sys
 from parsing.parse_data import open_file, parse_data, check_prop, check_all_available
+import algorithm.start as r
 
 
-
-def main():
+def get_data():
     if len(sys.argv) != 2:
         print("Error: must Entre valid args 'a_maze_ing.py config.txt'")
         sys.exit(1)
@@ -17,5 +17,10 @@ def main():
     require = check_all_available(check_proprety)
     print(require)
     return require
+
+
+def main():
+    data = get_data()
+    r.run(data)
 
 main()
