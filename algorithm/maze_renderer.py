@@ -170,6 +170,6 @@ def MazeRenderer(width, height, entry, exit_, maze, parents):
 
     path_coords.add(entry)
 
-    ascii_render(width, height, entry, exit_, maze, path_coords)
-    emoji_render(width, height, entry, exit_, maze, path_coords)
+    # ascii_render(width, height, entry, exit_, maze, path_coords)
+    # emoji_render(width, height, entry, exit_, maze, path_coords)
     ansi_render(width, height, entry, exit_, maze, path_coords)

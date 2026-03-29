@@ -7,8 +7,8 @@ CONFIG = config.txt
 all: run
 
 
-# install:
-# 	$(PIP) install -r requirements.txt
+install:
+	$(PIP) install -r requirements.txt
 
 
 run:
