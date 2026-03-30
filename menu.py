@@ -9,3 +9,7 @@ def menu():
     print("4 - Quit")
     choise = input("Choise? (1-4): ")
     return choise
+
+
+def color_menu():
+    print("")

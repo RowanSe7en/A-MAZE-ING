@@ -1,5 +1,4 @@
 from algorithm.maze_generator import *
-from algorithm.maze_renderer import *
 
 class MazeSolver:
 
@@ -133,5 +132,5 @@ def solver_entery(width, height, entry, exit_, out_file, solve, maze):
         parents = maze_solver.bfs_solve_maze(maze)
 
     maze_solver.extract_the_path(out_file, maze, parents)
-    MazeRenderer(width, height, entry, exit_, maze, parents)
 
+    return parents

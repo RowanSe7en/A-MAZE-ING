@@ -44,8 +44,6 @@ def check_prop(dict_data: dict) -> dict:
         elif key == "output_file":
             if not val.endswith(".txt"):
                 raise ValueError(f"{val} must end with .txt")
-            if val == "config.txt":
-                raise ValueError(f"The output file cannot be the same name as the config file 'config.txt'")
             data_parsed[key] = val
         elif key == "perfect":
             if val.lower() not in ['true','false']:
