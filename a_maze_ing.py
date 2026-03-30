@@ -2,9 +2,6 @@
 import sys
 from parsing.parse_data import open_file, parse_data, check_prop, check_all_available
 from menu import menu, color_menu
-# from algorithm.maze_generator import *
-# from algorithm.maze_solver import *
-# from algorithm.maze_renderer import *
 import algorithm
 import os
 
@@ -23,58 +20,94 @@ def get_data():
         raise ValueError(f"The output file cannot be the same name as the config file ")
     return require
 
-def rendering(is_solved, data, is_colored, theme_id=None):
-    # os.system("clear")
+def renderer(is_solved, data, is_colored, maze, parents, theme_id=None):
+    algorithm.MazeRenderer(data["width"], data["height"], data["entry"], data["exit"], maze, parents, is_solved, is_colored, theme_id)
+
+
+def entery_point(data, is_colored, theme_id=None):
+    os.system("clear")
     maze = algorithm.generator_entery(data["width"], data["height"], data.get("seed",None), data["entry"], data["exit"], data["perfect"], is_colored, theme_id)
-    # parents = algorithm.solver_entery(data["width"], data["height"], data["entry"], data["exit"], data["output_file"], data.get("solve", None), maze)
-    # algorithm.MazeRenderer(data["width"], data["height"], data["entry"], data["exit"], maze, parents, is_solved, is_colored, theme_id)
+    parents = algorithm.solver_entery(data["width"], data["height"], data["entry"], data["exit"], data["output_file"], data.get("solve", None), maze)
+
+    return { "maze": maze, "parents": parents}
     
 def main():
-    print("""
-     █████╗     ███╗   ███╗ █████╗ ███████╗███████╗    ██╗███╗   ██╗ ██████╗ 
-    ██╔══██╗    ████╗ ████║██╔══██╗╚══███╔╝██╔════╝    ██║████╗  ██║██╔════╝ 
-    ███████║    ██╔████╔██║███████║  ███╔╝ █████╗      ██║██╔██╗ ██║██║  ███╗
-    ██╔══██║    ██║╚██╔╝██║██╔══██║ ███╔╝  ██╔══╝      ██║██║╚██╗██║██║   ██║
-    ██║  ██║    ██║ ╚═╝ ██║██║  ██║███████╗███████╗    ██║██║ ╚████║╚██████╔╝
-    ╚═╝  ╚═╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝    ╚═╝╚═╝  ╚═══╝ ╚═════╝
-                                                   - by : brouane / bmarbouh
-    """)
+
+    os.system("clear")
+
+    print(r"""
+    ╔══════════════════════════════════════════════════════════════════════════════════╗
+    ║                                                                                  ║
+    ║      █████╗     ███╗   ███╗ █████╗ ███████╗███████╗    ██╗███╗   ██╗ ██████╗     ║
+    ║     ██╔══██╗    ████╗ ████║██╔══██╗╚══███╔╝██╔════╝    ██║████╗  ██║██╔════╝     ║
+    ║     ███████║    ██╔████╔██║███████║  ███╔╝ █████╗      ██║██╔██╗ ██║██║  ███╗    ║
+    ║     ██╔══██║    ██║╚██╔╝██║██╔══██║ ███╔╝  ██╔══╝      ██║██║╚██╗██║██║   ██║    ║
+    ║     ██║  ██║    ██║ ╚═╝ ██║██║  ██║███████╗███████╗    ██║██║ ╚████║╚██████╔╝    ║
+    ║     ╚═╝  ╚═╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝    ╚═╝╚═╝  ╚═══╝ ╚═════╝     ║
+    ║                                                                                  ║
+    ║                           🧩  A - M A Z E - I N G  🧩                            ║
+    ║                                                                                  ║
+    ║                         Created by brouane / bmarbouh                            ║
+    ╠══════════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                                  ║
+    ║   • Generate perfect & imperfect mazes                                           ║
+    ║   • Visualize solving algorithms                                                 ║
+    ║   • Optional colored rendering                                                   ║
+    ║                                                                                  ║
+    ╚══════════════════════════════════════════════════════════════════════════════════╝
+""")
     try:
+
         data = get_data()
         is_solved = False
         is_colored = False
-        rendering(is_solved, data, is_colored,theme_id=None)
+
+        input("Press any key to start...")
+        maze_data = entery_point(data, is_colored)
+
         while(True):
+
             try:
+
                 num = menu()
+
                 if num == "":
                     print("YOU LEFT THE MAZE, SEE YOU LATER ALLIGATOR")
                     exit(1)
                 else:
                     num = int(num)
+
             except Exception:
                 raise ValueError ("choise Not Valid number")
+
             if num ==  1:
-                rendering(is_solved, data, is_colored)
+                maze_data = entery_point(data, is_colored)
+
             elif num ==  2:
+
                 if is_solved:
                     is_solved = False
                 else:
                     is_solved = True
-                rendering(is_solved, data, is_colored)
+                renderer(is_solved, data, is_colored, maze_data['maze'], maze_data['parents'])
+
             elif num == 3:
+
                 color_choise = color_menu()
 
                 is_colored = True
-                rendering(is_solved,data, is_colored,color_choise)
+                renderer(is_solved, data, is_colored, maze_data['maze'], maze_data['parents'], color_choise)
                 is_colored = False 
+
             elif num == 4:
                 break
-    except KeyboardInterrupt:
-        print("dhf")
-        exit(1)
-    except Exception as error:
 
+    except KeyboardInterrupt:
+
+        print("\nYOU LEFT THE MAZE, SEE YOU LATER ALLIGATOR")
+        exit(1)
+
+    except Exception as error:
         print(f"Error: {error}")
 
 main()
