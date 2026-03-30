@@ -2,9 +2,10 @@
 import sys
 from parsing.parse_data import open_file, parse_data, check_prop, check_all_available
 from menu import menu, color_menu
-from algorithm.maze_generator import *
-from algorithm.maze_solver import *
-from algorithm.maze_renderer import *
+# from algorithm.maze_generator import *
+# from algorithm.maze_solver import *
+# from algorithm.maze_renderer import *
+import algorithm
 import os
 
 def get_data():
@@ -23,10 +24,10 @@ def get_data():
     return require
 
 def rendering(is_solved, data, is_colored, theme_id=None):
-    os.system("clear")
-    maze = generator_entery(data["width"], data["height"], data.get("seed",None), data["entry"], data["exit"], data["perfect"])
-    parents = solver_entery(data["width"], data["height"], data["entry"], data["exit"], data["output_file"], data.get("solve", None), maze)
-    MazeRenderer(data["width"], data["height"], data["entry"], data["exit"], maze, parents, is_solved, is_colored, theme_id)
+    # os.system("clear")
+    maze = algorithm.generator_entery(data["width"], data["height"], data.get("seed",None), data["entry"], data["exit"], data["perfect"], is_colored, theme_id)
+    # parents = algorithm.solver_entery(data["width"], data["height"], data["entry"], data["exit"], data["output_file"], data.get("solve", None), maze)
+    # algorithm.MazeRenderer(data["width"], data["height"], data["entry"], data["exit"], maze, parents, is_solved, is_colored, theme_id)
     
 def main():
     print("""

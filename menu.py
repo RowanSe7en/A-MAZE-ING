@@ -1,4 +1,4 @@
-from theme_palette import *
+from algorithm.theme_palette import *
 
 import sys
 

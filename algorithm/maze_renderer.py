@@ -1,9 +1,8 @@
-from algorithm.maze_generator import ft_coords
 import random
 import time
-from theme_palette import *
+from algorithm.theme_palette import themes, theme_mapper
 
-def ascii_render(width, height, entry, exit_, maze, path_coords, is_solved):
+def ascii_render(width, height, entry, exit_, maze, path_coords):
 
     for y in range(height):
 
@@ -41,10 +40,11 @@ def ascii_render(width, height, entry, exit_, maze, path_coords, is_solved):
 
     print("+")
 
-def emoji_render(width, height, entry, exit_, maze, path_coords, is_solved):
+def emoji_render(width, height, entry, exit_, maze, path_coords):
 
     for y in range(height):
         print("⬛", end="")
+        from algorithm.maze_generator import ft_coords
 
         for x in range(width):
             if maze[y][x] & 1 or ((y, x) in ft_coords and maze[y - 1][x] != 16):
@@ -106,21 +106,27 @@ def ansi_render(width, height, entry, exit_, maze, path_coords, is_solved, is_co
     global previous_color
 
     if is_colored:
+
         if theme_id == "7":
+
             random.seed(time.time())
             random_theme_key = random.choice(list(themes.keys()))
             theme = themes[random_theme_key]
             previous_color = theme
             is_changed = True
+
         else:
+
             theme_mapper_id = theme_mapper.get(theme_id, None)
+
             if theme_mapper_id:
+
                 theme = themes[theme_mapper_id]
                 previous_color = theme
                 is_changed = True
+
             else:
                 print("Invalid Choise")
-        
 
     elif not is_colored and is_changed:
         theme = previous_color
@@ -135,6 +141,7 @@ def ansi_render(width, height, entry, exit_, maze, path_coords, is_solved, is_co
 
     for y in range(height):
         print(wall_color, end="")
+        from algorithm.maze_generator import ft_coords
 
         for x in range(width):
             if maze[y][x] & 1 or ((y, x) in ft_coords and maze[y - 1][x] != 16):

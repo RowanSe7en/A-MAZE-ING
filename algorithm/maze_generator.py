@@ -1,4 +1,14 @@
+from algorithm.maze_renderer import MazeRenderer
+from algorithm.theme_palette import themes, theme_mapper
+
+
 import random
+import time
+import os
+
+def clear():
+    os.system("clear")  # linux/mac
+    # os.system("cls")  # windows
 
 ft_coords = []
 
@@ -93,7 +103,122 @@ class MazeGenerator:
                 self.maze[ft_y][ft_x] += 1
                 ft_coords.append((ft_y, ft_x))
 
-        def generate_perfect_maze(self): #dfs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        def ansi_render(self, is_colored, theme_id):
+            
+
+            theme = themes['ash_lava']
+            wall_color   = theme['wall_color']
+            road_color   = theme['road_color']
+            entery_color    = theme['entery_color']
+            exit_color = theme['exit_color']
+
+            for y in range(self.height):
+                print(wall_color, end="")
+
+                for x in range(self.width):
+                    if self.maze[y][x] & 1 or ((y, x) in ft_coords and self.maze[y - 1][x] != 16):
+                        print(wall_color + wall_color, end="")
+                    else:
+                        if self.maze[y][x] == 16:
+                            left = entery_color
+                        # elif (y, x) in path_coords and (
+                        #     (y > 0 and (y - 1, x) in path_coords) or (y - 1, x) == self.entry
+                        # ) and is_solved:
+                        #     left = path_color
+                        else:
+                            left = road_color
+
+                        print(left + wall_color, end="")
+                        
+                print()
+
+                for x in range(self.width):
+                    # if (
+                    #     (y, x) in path_coords
+                    #     and (x > 0 and ((y, x - 1) in path_coords or (y, x - 1) == self.entry))
+                    #     and not self.maze[y][x] & (1 << 3) and is_solved
+                    # ):
+                    #     left = path_color
+                    if self.maze[y][x] == 16 and self.maze[y][x - 1] == 16:
+                        left = entery_color
+                    elif self.maze[y][x] & (1 << 3) or self.maze[y][x] & (1 << 4):
+                        left = wall_color
+                    else:
+                        left = road_color
+
+                    if (y, x) == self.entry:
+                        content = entery_color
+                    elif (y, x) == self.exit_:
+                        content = exit_color
+                    # elif (y, x) in path_coords and is_solved:
+                    #     content = path_color
+                    elif self.maze[y][x] == 16:
+                        content = entery_color
+                    else:
+                        content = road_color
+
+                    print(left + content, end="")
+
+                right = wall_color if self.maze[y][self.width - 1] & (1 << 1) else ""
+                print(right)
+                # time.sleep(0.09)
+
+            for x in range(self.width):
+                if self.maze[self.height - 1][x] & (1 << 2):
+                    print(wall_color + wall_color, end="")
+                else:
+                    print(road_color + road_color, end="")
+            print(wall_color)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        def generate_perfect_maze(self, is_colored, theme_id): #dfs
 
             if self.seed is not None:
                 random.seed(self.seed)
@@ -107,6 +232,11 @@ class MazeGenerator:
                 y, x = stack[-1]
 
                 neighbors = []
+
+                clear()
+                self.ansi_render(is_colored, theme_id)
+                time.sleep(0.003)
+
 
                 for dy, dx, wall, dire in MazeGenerator.directions:
 
@@ -174,12 +304,12 @@ class MazeGenerator:
                 
             return self.maze
 
-def generator_entery(width, height, seed, entry, exit_, is_perfect):
+def generator_entery(width, height, seed, entry, exit_, is_perfect, is_colored, theme_id):
 
     maze_gen = MazeGenerator(width, height, seed, entry, exit_)
 
     maze_gen.where_is_42()
-    maze = maze_gen.generate_perfect_maze()
+    maze = maze_gen.generate_perfect_maze(is_colored, theme_id)
 
     if not is_perfect:
         maze = maze_gen.generate_non_perfect_maze()
