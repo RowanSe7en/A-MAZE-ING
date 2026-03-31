@@ -1,14 +1,9 @@
-from algorithm.maze_renderer import MazeRenderer
 from algorithm.theme_palette import themes, theme_mapper
-
-
+from algorithm.maze_renderer import MazeRenderer
+from algorithm.clear import clear
+from algorithm.ascii_landing import ascii_landing
 import random
 import time
-import os
-
-def clear():
-    os.system("clear")  # linux/mac
-    # os.system("cls")  # windows
 
 ft_coords = []
 
@@ -110,6 +105,7 @@ class MazeGenerator:
             road_color   = theme['road_color']
             entery_color    = theme['entery_color']
             exit_color = theme['exit_color']
+            ft_pattern = theme['ft_pattern']
 
             for y in range(self.height):
                 print(wall_color, end="")
@@ -119,7 +115,7 @@ class MazeGenerator:
                         print(wall_color + wall_color, end="")
                     else:
                         if self.maze[y][x] == 16:
-                            left = entery_color
+                            left = ft_pattern
                         else:
                             left = road_color
 
@@ -130,7 +126,7 @@ class MazeGenerator:
                 for x in range(self.width):
 
                     if self.maze[y][x] == 16 and self.maze[y][x - 1] == 16:
-                        left = entery_color
+                        left = ft_pattern
                     elif self.maze[y][x] & (1 << 3) or self.maze[y][x] & (1 << 4):
                         left = wall_color
                     else:
@@ -141,7 +137,7 @@ class MazeGenerator:
                     elif (y, x) == self.exit_:
                         content = exit_color
                     elif self.maze[y][x] == 16:
-                        content = entery_color
+                        content = ft_pattern
                     else:
                         content = road_color
 
@@ -157,7 +153,7 @@ class MazeGenerator:
                     print(road_color + road_color, end="")
             print(wall_color)
 
-        def generate_perfect_maze(self): #dfs
+        def generate_perfect_maze(self, generator_time): #dfs
 
             if self.seed is not None:
                 random.seed(self.seed)
@@ -171,11 +167,6 @@ class MazeGenerator:
                 y, x = stack[-1]
 
                 neighbors = []
-
-                clear()
-                self.maze_render()
-                # time.sleep(0.0)
-
 
                 for dy, dx, wall, dire in MazeGenerator.directions:
 
@@ -196,12 +187,21 @@ class MazeGenerator:
                     stack.append((ny, nx))
                     self.visited[ny][nx] = True
 
+                    if generator_time:
+                        clear()
+                        self.maze_render()
+                        time.sleep(generator_time)
+
                 else:
                     stack.pop()
+
+            if not generator_time:
+                clear()
+                self.maze_render()
                 
             return self.maze
 
-        def generate_non_perfect_maze(self): #dfs
+        def generate_non_perfect_maze(self, generator_time): #dfs
 
             if self.seed is not None:
                 random.seed(self.seed + 1)
@@ -243,14 +243,25 @@ class MazeGenerator:
                 
             return self.maze
 
-def generator_entery(width, height, seed, entry, exit_, is_perfect, is_colored, theme_id):
+def generator_entery(width, height, seed, entry, exit_, is_perfect, is_colored, theme_id, generator_time):
 
     maze_gen = MazeGenerator(width, height, seed, entry, exit_)
 
     maze_gen.where_is_42()
-    maze = maze_gen.generate_perfect_maze()
+
+    for cord in ft_coords:
+        if cord == entry:
+            ascii_landing()
+            print("The entery is placed inside of the 42 pattern, please enter another cords")
+            exit(1)
+        elif cord == exit_:
+            ascii_landing()
+            print("The exit is placed inside of the 42 pattern, please enter another cords")
+            exit(1)
+
+    maze = maze_gen.generate_perfect_maze(generator_time)
 
     if not is_perfect:
-        maze = maze_gen.generate_non_perfect_maze()
+        maze = maze_gen.generate_non_perfect_maze(generator_time)
 
     return maze

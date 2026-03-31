@@ -10,7 +10,7 @@ class MazeSolver:
         self.exit_ = exit_
         self.visited = [[False for _ in range(self.width)] for _ in range(self.height)]
 
-    def bfs_solve_maze(self, maze): #bfs
+    def bfs_solve_maze(self, maze):
 
         en_y, en_x = self.entry
         ex_y, ex_x = self.exit_
@@ -45,9 +45,7 @@ class MazeSolver:
 
         return parents
 
-        
-
-    def dfs_solve_maze(self, maze): #dfs
+    def dfs_solve_maze(self, maze):
 
         en_y, en_x = self.entry
         ex_y, ex_x = self.exit_

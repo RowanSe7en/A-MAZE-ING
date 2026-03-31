@@ -1,75 +1,48 @@
 #!/usr/bin/env python3
-import sys
+
 from parsing.parse_data import open_file, parse_data, check_prop, check_all_available
 from menu import menu, color_menu
+from algorithm.ascii_landing import ascii_landing
 import algorithm
-import os
+import sys
 
 def get_data():
+
     if len(sys.argv) != 2:
         print("Error: must Entre valid args 'a_maze_ing.py config.txt'")
         sys.exit(1)
+
     if not sys.argv[1].endswith(".txt"):
         print(f"Error : {sys.argv[1]} not a valid file")
         sys.exit(1)
+
     f = open_file(sys.argv[1])
+
     parse = parse_data(f)
     check_proprety = check_prop(parse)
     require = check_all_available(check_proprety)
+
     if require["output_file"] == sys.argv[1]:
         raise ValueError(f"The output file cannot be the same name as the config file ")
+
     return require
 
 def renderer(is_solved, data, is_colored, maze, parents, theme_id=None):
-    algorithm.MazeRenderer(data["width"], data["height"], data["entry"], data["exit"], maze, parents, is_solved, is_colored, theme_id)
+    algorithm.MazeRenderer(data["width"], data["height"], data["entry"], data["exit"], maze, parents, is_solved, is_colored, theme_id, data["solve_time"])
 
 
 def entery_point(data, is_colored, theme_id=None):
-    os.system("clear")
-    maze = algorithm.generator_entery(data["width"], data["height"], data.get("seed",None), data["entry"], data["exit"], data["perfect"], is_colored, theme_id)
+
+    algorithm.clear()
+
+    maze = algorithm.generator_entery(data["width"], data["height"], data.get("seed",None), data["entry"], data["exit"], data["perfect"], is_colored, theme_id, data["generate_time"])
     parents = algorithm.solver_entery(data["width"], data["height"], data["entry"], data["exit"], data["output_file"], data.get("solve", None), maze)
 
     return { "maze": maze, "parents": parents}
 
-class C:
-    reset  = "\033[0m"
-    bold   = "\033[1m"
-    dim    = "\033[2m"
-
-    red    = "\033[31m"
-    green  = "\033[32m"
-    yellow = "\033[33m"
-    blue   = "\033[34m"
-    magenta= "\033[35m"
-    cyan   = "\033[36m"
-    white  = "\033[37m"
-
-
 def main():
 
-    os.system("clear")
-
-    print(f"""{C.cyan}{C.dim}
-    ╔══════════════════════════════════════════════════════════════════════════════════╗
-    ║                                                                                  ║
-    ║{C.magenta}{C.bold}      █████╗     ███╗   ███╗ █████╗ ███████╗███████╗    ██╗███╗   ██╗ ██████╗     {C.cyan}{C.dim}║
-    ║{C.magenta}{C.bold}     ██╔══██╗    ████╗ ████║██╔══██╗╚══███╔╝██╔════╝    ██║████╗  ██║██╔════╝     {C.cyan}{C.dim}║
-    ║{C.magenta}{C.bold}     ███████║    ██╔████╔██║███████║  ███╔╝ █████╗      ██║██╔██╗ ██║██║  ███╗    {C.cyan}{C.dim}║
-    ║{C.magenta}{C.bold}     ██╔══██║    ██║╚██╔╝██║██╔══██║ ███╔╝  ██╔══╝      ██║██║╚██╗██║██║   ██║    {C.cyan}{C.dim}║
-    ║{C.magenta}{C.bold}     ██║  ██║    ██║ ╚═╝ ██║██║  ██║███████╗███████╗    ██║██║ ╚████║╚██████╔╝    {C.cyan}{C.dim}║
-    ║{C.magenta}{C.bold}     ╚═╝  ╚═╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝    ╚═╝╚═╝  ╚═══╝ ╚═════╝     {C.cyan}{C.dim}║
-    ║                                                                                  ║
-    ║{C.yellow}{C.bold}                           🧩  A - M A Z E - I N G  🧩                            {C.cyan}{C.dim}║
-    ║                                                                                  ║
-    ║{C.white}                         Created by brouane / bmarbouh                            {C.cyan}{C.dim}║
-    ╠══════════════════════════════════════════════════════════════════════════════════╣
-    ║                                                                                  ║
-    ║{C.green}   ● Generate perfect & imperfect mazes                                           {C.cyan}{C.dim}║
-    ║{C.green}   ● Visualize solving algorithms                                                 {C.cyan}{C.dim}║
-    ║{C.green}   ● Optional colored rendering                                                   {C.cyan}{C.dim}║
-    ║                                                                                  ║
-    ╚══════════════════════════════════════════════════════════════════════════════════╝
-    {C.reset}""")
+    ascii_landing()
 
     try:
 
@@ -77,13 +50,12 @@ def main():
         is_solved = False
         is_colored = False
 
-        input("Press any key to start...")
+        input("Press ENTER key to start... ")
         maze_data = entery_point(data, is_colored)
 
         while(True):
 
             try:
-
                 num = menu()
 
                 if num == "":
@@ -104,6 +76,7 @@ def main():
                     is_solved = False
                 else:
                     is_solved = True
+
                 renderer(is_solved, data, is_colored, maze_data['maze'], maze_data['parents'])
 
             elif num == 3:
@@ -123,6 +96,7 @@ def main():
         exit(1)
 
     except Exception as error:
+        ascii_landing()
         print(f"Error: {error}")
 
 main()
