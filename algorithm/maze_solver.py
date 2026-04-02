@@ -109,12 +109,14 @@ class MazeSolver:
     def extract_the_path(self, output_file, maze, parents):
 
         path_list = []
+        path_cords = {}
         current = self.exit_
 
         while current != self.entry:
 
             py, px, direction = parents[current]
             path_list.append(direction)
+            path_cords[current] = (py, px, direction)
             current = (py, px)
 
         path_list.reverse()
@@ -137,7 +139,8 @@ class MazeSolver:
             output_maze.write(f"\n{en_y}, {en_x}\n")
             output_maze.write(f"{ex_y}, {ex_x}\n")
             output_maze.write(path_str)
-
+        
+        return dict(reversed(list(path_cords.items())))
 
 def solver_entery(width, height, entry, exit_, out_file, solve, maze):
 
@@ -148,6 +151,6 @@ def solver_entery(width, height, entry, exit_, out_file, solve, maze):
     elif solve.upper() == "BFS":
         parents = maze_solver.bfs_solve_maze(maze)
 
-    maze_solver.extract_the_path(out_file, maze, parents)
+    path_cords = maze_solver.extract_the_path(out_file, maze, parents)
 
-    return parents
+    return path_cords

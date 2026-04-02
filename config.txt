@@ -3,15 +3,15 @@ WIDTH=19
 ENTRY=0,8
 EXIT=15,0
 OUTPUT_FILE=maze.txt
-PeRFeCT=True
+PERFECT=False
 
-
-# Extra Keys
 #SEED=3
-SOLVE=dfs
+
+#solve algorithm 'DFS' or 'BFS'
+SOLVE=DFS
+
+ANIMATION=True
 
 # GENERATE_TIME better to be longer than 0.04
-GENERATE_TIME=0
+GENERATE_TIME=0.04
 SOLVE_TIME=0.01
-
-ANIMATION=False

@@ -107,11 +107,20 @@ def check_prop(dict_data: dict) -> dict:
             except Exception:
                 data_parsed[key] = -1
 
-    if float(data_parsed.get("solve_time", -1)) < 0:
-        data_parsed["solve_time"] = 0.1
+    if not data_parsed.get("animation", False):
 
-    if float(data_parsed.get("generate_time", -1)) < 0:
-        data_parsed["generate_time"] = 0.05
+        data_parsed["solve_time"] = 0
+        data_parsed["generate_time"] = 0
+
+    else:
+
+        if float(data_parsed.get("solve_time", -1)) < 0:
+            data_parsed["solve_time"] = 0.1
+
+        if float(data_parsed.get("generate_time", -1)) < 0:
+            data_parsed["generate_time"] = 0.05
+            
+
 
     return data_parsed
 

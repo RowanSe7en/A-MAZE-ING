@@ -10,11 +10,11 @@ ft_coords = []
 class MazeGenerator:
 
     directions = [
-            (-1, 0, 1 << 0, "N"),  # North
-            (0, 1, 1 << 1, "E"),   # East
-            (1, 0, 1 << 2, "S"),   # South
-            (0, -1, 1 << 3, "W")   # West
-        ]
+        (-1, 0, 1 << 0, "N"),  # North
+        (0, 1, 1 << 1, "E"),   # East
+        (1, 0, 1 << 2, "S"),   # South
+        (0, -1, 1 << 3, "W")   # West
+    ]
 
     opposite = {
         1 << 0: 1 << 2,
@@ -30,10 +30,12 @@ class MazeGenerator:
         self.seed = seed
         self.entry = entry
         self.exit_ = exit_
+
         self.maze = [
             [0xF for _ in range(self.width)]
             for _ in range(self.height)
             ]
+
         self.visited = [
             [False for _ in range(self.width)]
             for _ in range(self.height)
@@ -169,7 +171,7 @@ class MazeGenerator:
                 print(road_color + road_color, end="")
         print(wall_color)
 
-    def generate_perfect_maze(self, generator_time):
+    def generate_perfect_maze(self, generator_time, is_perfect):
 
         if self.seed is not None:
             random.seed(self.seed)
@@ -211,7 +213,7 @@ class MazeGenerator:
             else:
                 stack.pop()
 
-        if not generator_time:
+        if not generator_time and is_perfect:
             clear()
             self.maze_render()
 
@@ -223,7 +225,7 @@ class MazeGenerator:
             random.seed(self.seed + 1)
 
         y, x = self.exit_
-        randomizer = [0, 1]
+        randomizer = [False, True]
         non_perfect_visited = [
             [False for _ in range(self.width)]
             for _ in range(self.height)
@@ -261,8 +263,17 @@ class MazeGenerator:
                 stack.append((ny, nx))
                 non_perfect_visited[ny][nx] = True
 
+                if generator_time:
+                    clear()
+                    self.maze_render()
+                    time.sleep(generator_time)
+
             else:
                 stack.pop()
+
+        if not generator_time:
+            clear()
+            self.maze_render()
 
         return self.maze
 
@@ -290,7 +301,7 @@ def generator_entery(width, height, seed, entry,
                 )
             exit(1)
 
-    maze = maze_gen.generate_perfect_maze(generator_time)
+    maze = maze_gen.generate_perfect_maze(generator_time, is_perfect)
 
     if not is_perfect:
         maze = maze_gen.generate_non_perfect_maze(generator_time)

@@ -138,7 +138,7 @@ previous_color = None
 
 
 def ansi_render(width, height, entry, exit_, maze,
-                path_coords, is_solved, is_colored, theme_id):
+                path_coords, is_solved, is_colored, theme_id, parents):
 
     global is_changed
     global previous_color
@@ -186,6 +186,9 @@ def ansi_render(width, height, entry, exit_, maze,
 
         for x in range(width):
 
+            py, px, _ = parents.get((y, x), (0, 0, 0))
+            fy, fx, _ = parents.get((y - 1, x), (0, 0, 0))
+
             if (
                 maze[y][x] & 1
                 or ((y, x) in ft_coords and maze[y - 1][x] != 16)
@@ -195,9 +198,9 @@ def ansi_render(width, height, entry, exit_, maze,
                 if maze[y][x] == 16:
                     left = ft_pattern
                 elif (
-                    (y, x) in path_coords
-                    and (
-                        (y > 0 and (y - 1, x) in path_coords)
+                    (y, x) in path_coords and 
+                    (
+                        (y > 0 and ((y - 1, x) == (py, px) or (fy, fx) == (y, x)))
                         or (y - 1, x) == entry
                     )
                     and is_solved
@@ -212,11 +215,14 @@ def ansi_render(width, height, entry, exit_, maze,
 
         for x in range(width):
 
+            py, px, _ = parents.get((y, x), (0, 0, 0))
+            fy, fx, _ = parents.get((y, x - 1), (0, 0, 0))
+
             if (
                 (y, x) in path_coords
                 and (
                     x > 0
-                    and ((y, x - 1) in path_coords or (y, x - 1) == entry)
+                    and ((((y, x - 1) == (py, px) or (fy, fx) == (y, x)) and (y, x - 1) != exit_) or (y, x - 1) == entry)
                 )
                 and not maze[y][x] & (1 << 3)
                 and is_solved
@@ -283,7 +289,7 @@ def MazeRenderer(width, height, entry, exit_, maze,
             clear()
             animated_path_coords.add(path_coords_list[i])
             ansi_render(width, height, entry, exit_, maze,
-                        animated_path_coords, is_solved, is_colored, theme_id)
+                        animated_path_coords, is_solved, is_colored, theme_id, parents)
             if is_solved:
                 time.sleep(solve_time)
 
@@ -291,4 +297,4 @@ def MazeRenderer(width, height, entry, exit_, maze,
 
         clear()
         ansi_render(width, height, entry, exit_, maze,
-                    path_coords, is_solved, is_colored, theme_id)
+                    path_coords, is_solved, is_colored, theme_id, parents)
