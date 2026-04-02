@@ -101,6 +101,7 @@ def main():
                 raise ValueError("choise Not Valid number")
 
             if num == 1:
+                is_solved = False
                 maze_data = entery_point(data, is_colored)
 
             elif num == 2:

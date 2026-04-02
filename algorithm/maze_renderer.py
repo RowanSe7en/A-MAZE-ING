@@ -298,5 +298,3 @@ def MazeRenderer(width, height, entry, exit_, maze,
         clear()
         ansi_render(width, height, entry, exit_, maze,
                     path_coords, is_solved, is_colored, theme_id, parents)
-
-    ascii_render(width, height, entry, exit_, maze, path_coords)
