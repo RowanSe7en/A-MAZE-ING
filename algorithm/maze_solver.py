@@ -136,8 +136,8 @@ class MazeSolver:
 
             en_y, en_x = self.entry
             ex_y, ex_x = self.exit_
-            output_maze.write(f"\n{en_y}, {en_x}\n")
-            output_maze.write(f"{ex_y}, {ex_x}\n")
+            output_maze.write(f"\n{en_y},{en_x}\n")
+            output_maze.write(f"{ex_y},{ex_x}\n")
             output_maze.write(path_str)
         
         return dict(reversed(list(path_cords.items())))

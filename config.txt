@@ -1,17 +1,23 @@
+# ----------------------------------Mandatory Keys---------------------------------
+
 HEIGHT=15
-WIDTH=25
-ENTRY=0,2
-EXIT=10,13
-OUTPUT_FILE=maze.txt
+WIDTH=14
+ENTRY=3,0
+EXIT=0,0
+OUTPUT_FILE=output_maze.txt
 PERFECT=False
+
+# ----------------------------------Optional SEED-----------------------------------
 
 #SEED=3
 
-#solve algorithm 'DFS' or 'BFS'
-SOLVE=DFS
+# --------------------------Solve algorithm 'DFS' or 'BFS'--------------------------
 
-ANIMATION=True
+SOLVE=BFS
+
+# -------------------------------------Animation------------------------------------
 
 # GENERATE_TIME better to be longer than 0.04
+ANIMATION=False
 GENERATE_TIME=0.04
 SOLVE_TIME=0.02

@@ -8,6 +8,7 @@ BOLD = "\033[1m"
 
 
 def menu():
+
     """Display the main menu and get user's choice."""
     print(f"\n{GOLD}╔═══════════════════════════════════════╗{RESET}")
     print(

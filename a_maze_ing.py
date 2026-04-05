@@ -2,8 +2,8 @@
 
 from parsing.parse_data import check_prop, check_all_available
 from parsing.parse_data import open_file, parse_data
-from menu import menu, color_menu
 from algorithm.ascii_landing import ascii_landing
+from menu import menu, color_menu
 import algorithm
 import sys
 
@@ -24,7 +24,7 @@ def get_data():
     check_proprety = check_prop(parse)
     require = check_all_available(check_proprety)
 
-    if require["output_file"] == sys.argv[1]:
+    if require["data"]["output_file"] == sys.argv[1]:
         raise ValueError(
             "The output file cannot be the same name as the config file "
             )
@@ -47,7 +47,7 @@ def renderer(is_solved, data, is_colored, maze, parents, theme_id=None):
         )
 
 
-def entery_point(data, is_colored, theme_id=None):
+def entery_point(data, is_ft_printable):
 
     algorithm.clear()
 
@@ -58,7 +58,8 @@ def entery_point(data, is_colored, theme_id=None):
         data["entry"],
         data["exit"],
         data["perfect"],
-        data["generate_time"]
+        data["generate_time"],
+        is_ft_printable
         )
     parents = algorithm.solver_entery(
         data["width"],
@@ -79,12 +80,15 @@ def main():
 
     try:
 
-        data = get_data()
+        data_dict = get_data()
+        data = data_dict["data"]
+
+        is_ft_printable = data_dict["is_ft_printable"]
         is_solved = False
         is_colored = False
 
         input("Press ENTER key to start... ")
-        maze_data = entery_point(data, is_colored)
+        maze_data = entery_point(data, is_ft_printable)
 
         while (True):
 
@@ -102,7 +106,7 @@ def main():
 
             if num == 1:
                 is_solved = False
-                maze_data = entery_point(data, is_colored)
+                maze_data = entery_point(data, is_ft_printable)
 
             elif num == 2:
 
@@ -119,18 +123,21 @@ def main():
 
             elif num == 3:
 
-                color_choise = color_menu()
+                theme_id = color_menu()
 
                 is_colored = True
                 renderer(
                     is_solved,
                     data,
                     is_colored,
-                    maze_data['maze'], maze_data['parents'], color_choise)
+                    maze_data['maze'], maze_data['parents'], theme_id)
                 is_colored = False
 
             elif num == 4:
                 break
+
+            else:
+                print("Invalid choice, please try again. (1-4)")
 
     except KeyboardInterrupt:
 
@@ -139,7 +146,7 @@ def main():
 
     except Exception as error:
         ascii_landing()
-        print(f"Error: {error}")
+        print(f"Handeled Error: {error}")
 
 
 main()

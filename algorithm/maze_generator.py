@@ -23,13 +23,14 @@ class MazeGenerator:
         1 << 3: 1 << 1
     }
 
-    def __init__(self, width, height, seed, entry, exit_):
+    def __init__(self, width, height, seed, entry, exit_, is_ft_printable=True):
 
         self.width = width
         self.height = height
         self.seed = seed
         self.entry = entry
         self.exit_ = exit_
+        self.is_ft_printable = is_ft_printable
 
         self.maze = [
             [0xF for _ in range(self.width)]
@@ -206,7 +207,7 @@ class MazeGenerator:
                 self.visited[ny][nx] = True
 
                 if generator_time:
-                    clear()
+                    clear(self.is_ft_printable)
                     self.maze_render()
                     time.sleep(generator_time)
 
@@ -214,7 +215,7 @@ class MazeGenerator:
                 stack.pop()
 
         if not generator_time and is_perfect:
-            clear()
+            clear(self.is_ft_printable)
             self.maze_render()
 
         return self.maze
@@ -264,7 +265,7 @@ class MazeGenerator:
                 non_perfect_visited[ny][nx] = True
 
                 if generator_time:
-                    clear()
+                    clear(self.is_ft_printable)
                     self.maze_render()
                     time.sleep(generator_time)
 
@@ -272,18 +273,19 @@ class MazeGenerator:
                 stack.pop()
 
         if not generator_time:
-            clear()
+            clear(self.is_ft_printable)
             self.maze_render()
 
         return self.maze
 
 
 def generator_entery(width, height, seed, entry,
-                     exit_, is_perfect, generator_time):
+                     exit_, is_perfect, generator_time, is_ft_printable):
 
-    maze_gen = MazeGenerator(width, height, seed, entry, exit_)
+    maze_gen = MazeGenerator(width, height, seed, entry, exit_, is_ft_printable)
 
-    maze_gen.where_is_42()
+    if is_ft_printable:
+        maze_gen.where_is_42()
 
     for cord in ft_coords:
         if cord == entry:

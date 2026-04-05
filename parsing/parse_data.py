@@ -44,34 +44,37 @@ def check_prop(dict_data: dict) -> dict:
             try:
                 data_parsed[key] = int(float(val))
             except Exception:
-                raise ValueError(f"you must enter a valid {key}")
+                raise ValueError(f"Invalid value for '{key}': must be a positive integer.")
 
             if data_parsed[key] <= 0:
-                raise ValueError
+                raise ValueError(f"Invalid value for '{key}': must be a positive integer.")
 
         elif key in ["entry", "exit"]:
-
-            cords = [int(x.strip()) for x in val.split(',')]
+            
+            try:
+                cords = [int(x.strip()) for x in val.split(',')]
+            except ValueError:
+                raise ValueError(f"Invalid value for '{key}': the keys x and y are not integers.")
 
             if len(cords) != 2:
-                raise ValueError(f"These is not a valid cords {tuple(cords)}")
+                raise ValueError(f"Invalid value for '{key}': must be in this format (<y>, <x>).")
 
             if cords[0] < 0 or cords[1] < 0:
-                raise ValueError(f"{key} coordinates cannot be negative.")
+                raise ValueError(f"Invalid value for '{key}': coordinates cannot be negative.")
 
             data_parsed[key] = tuple(cords)
 
         elif key == "output_file":
 
             if not val.endswith(".txt"):
-                raise ValueError(f"{val} must end with .txt")
+                raise ValueError(f"Invalid value for '{key}': must end with '.txt'")
 
             data_parsed[key] = val
 
         elif key == "perfect":
 
             if val.lower() not in ['true', 'false']:
-                raise ValueError
+                raise ValueError(f"Invalid value for '{key}': must be 'true' or 'false'")
             data_parsed[key] = val.lower() == "true"
 
         elif key == "seed":
@@ -129,6 +132,7 @@ def check_all_available(data: dict):
 
     required = ["width", "height", "entry", "exit", "output_file", "perfect"]
     missing = [k for k in required if k not in data]
+    is_ft_printable = True
 
     if missing:
 
@@ -136,26 +140,18 @@ def check_all_available(data: dict):
             raise ValueError(f"Missing mandatory key: {item}")
 
     if data["entry"] == data["exit"]:
-        raise ValueError("(entry == exit)")
+        raise ValueError(f"Invalid value for '{data['exit']}' and '{data['entry']}': entry and exit cannot be the same.")
 
     if data['width'] < 9 or data['height'] < 7:
-        raise ValueError(
-            "The maze is so tiny,"
-            " try to enter wider dimensions in the 'config.txt' file"
-            )
-    elif data['width'] > 50 or data['height'] > 25:
-        raise ValueError(
-            "The maze is huge, "
-            "try to enter tiner dimensions in the 'config.txt' file"
-            )
+        is_ft_printable = False
 
     w, h = data["width"], data['height']
     en_x, en_y = data["entry"]
     ex_x, ex_y = data["exit"]
 
     if not (0 <= en_y < w and 0 <= en_x < h):
-        raise ValueError(f"Entry {data['entry']} is outside the maze bounds.")
+        raise ValueError(f"The entry {data['entry']} is outside the maze bounds.")
     elif not (0 <= ex_y < w and 0 <= ex_x < h):
-        raise ValueError(f"Exit {data['exit']} is outside the maze bounds.")
+        raise ValueError(f"The exit {data['exit']} is outside the maze bounds.")
 
-    return data
+    return {"data": data, "is_ft_printable": is_ft_printable}

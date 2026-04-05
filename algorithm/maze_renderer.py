@@ -164,7 +164,9 @@ def ansi_render(width, height, entry, exit_, maze,
                 is_changed = True
 
             else:
-                print("Invalid Choise")
+                theme = themes['ash_lava']
+                print("Invalid Theme ID, return to the default theme")
+
 
     elif not is_colored and is_changed:
         theme = previous_color
@@ -198,7 +200,7 @@ def ansi_render(width, height, entry, exit_, maze,
                 if maze[y][x] == 16:
                     left = ft_pattern
                 elif (
-                    (y, x) in path_coords and 
+                    ((y, x) in path_coords or (y, x) == entry or (y, x) == exit_) and
                     (
                         (y > 0 and ((y - 1, x) == (py, px) or (fy, fx) == (y, x)))
                         or (y - 1, x) == entry
@@ -219,11 +221,13 @@ def ansi_render(width, height, entry, exit_, maze,
             fy, fx, _ = parents.get((y, x - 1), (0, 0, 0))
 
             if (
-                (y, x) in path_coords
-                and (
-                    x > 0
-                    and ((((y, x - 1) == (py, px) or (fy, fx) == (y, x)) and (y, x - 1) != exit_) or (y, x - 1) == entry)
-                )
+                ((y, x) in path_coords or (y, x) == entry or (y, x) == exit_) and
+                ((x > 0 and 
+                (
+                    (((y, x - 1) == (py, px) or (fy, fx) == (y, x)) and (y, x - 1) != exit_)
+                    or (y, x - 1) == entry
+                    or (y, x - 1) == exit_
+                )) or (x < width and ((y, x + 1) == exit_ or (y, x + 1) == entry)))
                 and not maze[y][x] & (1 << 3)
                 and is_solved
             ):
@@ -279,7 +283,7 @@ def MazeRenderer(width, height, entry, exit_, maze,
     path_coords.add(entry)
     path_coords_list.reverse()
 
-    # ascii_render(width, height, entry, exit_, maze, path_coords, is_solved)
+    # ascii_render(width, height, entry, exit_, maze, path_coords)
     # emoji_render(width, height, entry, exit_, maze, path_coords, is_solved)
 
     if solve_time:
