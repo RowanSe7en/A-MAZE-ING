@@ -39,7 +39,7 @@ def renderer(
     maze: Any,
     parents: Any,
     ft_coords: Any,
-    theme_id: Optional[int] = None
+    theme_id: Optional[str] = None
 ) -> None:
     algorithm.MazeRenderer(
         data["width"],
@@ -50,7 +50,7 @@ def renderer(
         parents,
         is_solved,
         is_colored,
-        theme_id,
+        theme_id or "",  # <-- ensure it's always a string
         data["solve_time"],
         ft_coords
     )
@@ -71,13 +71,14 @@ def entery_point(data: Dict[str, Any],
         data["generate_time"],
         is_ft_printable
     )
+    solve_value: str = str(data.get("solve", ""))
     parents = algorithm.solver_entery(
         data["width"],
         data["height"],
         data["entry"],
         data["exit"],
         data["output_file"],
-        data.get("solve", None),
+        solve_value,
         maze["maze"]
     )
 

@@ -32,7 +32,7 @@ def menu() -> str:
         f"{GOLD}     ║{RESET}"
     )
     print(
-        f"{GOLD}║{RESET}  {GREEN}4 -{RESET} 🛠️ Change Config             "
+        f"{GOLD}║{RESET}  {GREEN}4 -{RESET} 🛠️  Change Config            "
         f"{GOLD}     ║{RESET}"
     )
     print(

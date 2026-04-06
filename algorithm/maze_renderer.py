@@ -142,7 +142,7 @@ def printer(what_to_print: str, is_end: bool) -> None:
 
 
 is_changed: bool = False
-previous_color: Optional[Dict[str, str]] = None
+previous_color: Dict[str, str] = themes['ash_lava']
 
 
 def ansi_render(width: int, height: int,
@@ -194,7 +194,7 @@ def ansi_render(width: int, height: int,
 
     for y in range(height):
 
-        printer(wall_color, 1)
+        printer(wall_color, True)
 
         for x in range(width):
 
@@ -205,7 +205,7 @@ def ansi_render(width: int, height: int,
                 maze[y][x] & 1
                 or ((y, x) in ft_coords and maze[y - 1][x] != 16)
             ):
-                printer(wall_color + wall_color, 1)
+                printer(wall_color + wall_color, True)
             else:
                 if maze[y][x] == 16:
                     left = ft_pattern
@@ -227,7 +227,7 @@ def ansi_render(width: int, height: int,
                 else:
                     left = road_color
 
-                printer(left + wall_color, 1)
+                printer(left + wall_color, True)
 
         print()
 
@@ -287,19 +287,19 @@ def ansi_render(width: int, height: int,
             else:
                 content = road_color
 
-            printer(left + content, 1)
+            printer(left + content, True)
 
         right = wall_color if maze[y][width - 1] & (1 << 1) else ""
-        printer(right, 0)
+        printer(right, False)
 
     for x in range(width):
 
         if maze[height - 1][x] & (1 << 2):
-            printer(wall_color + wall_color, 1)
+            printer(wall_color + wall_color, True)
         else:
-            printer(road_color + road_color, 1)
+            printer(road_color + road_color, True)
 
-    printer(wall_color, 0)
+    printer(wall_color, False)
 
 
 def MazeRenderer(width: int, height: int,

@@ -23,7 +23,11 @@ clean:
 
 lint:
 	python3 -m flake8 .
-	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs --explicit-package-bases
+
+lint-strict:
+	python3 -m flake8 .
+	mypy . --strict --explicit-package-bases
 
 
 .PHONY: all run clean debug
