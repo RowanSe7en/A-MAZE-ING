@@ -449,7 +449,119 @@ Maze creation follows this pipeline:
 This ensures the imperfect maze always starts from a solid base structure.
 
 -----
+## Preventing Large Open Areas
 
+One of the biggest risks when removing walls in a maze is accidentally creating *open rooms*.
+To prevent this, I implemented a **multi-layer safety system** that validates a wall before removing it.
+
+The goal of this logic is simple:
+
+> A wall is removed **only if the surrounding geometry guarantees the maze will stay corridor-shaped.**
+
+This is done using **two structural checks**.
+
+---
+
+# 1) Cell Topology Safety Rules
+
+Before removing a wall, the algorithm checks **how many walls the current cell already has**, depending on whether the cell is on the edge or in the interior of the maze.
+
+Because edge cells naturally have fewer neighbors, they must be protected differently than interior cells.
+
+---
+
+## Edge Cells Must Keep At Least Two Walls
+
+Cells located on maze borders are more fragile.
+If we remove too many walls from them, we quickly create wide openings along the maze boundary.
+
+To prevent this, edge cells are allowed to lose a wall **only if they still keep at least two walls** afterward.
+
+These bitmask values represent cells that already have exactly two walls:
+
+```python
+cells_with_two_walls_only = [3, 5, 6, 9, 10, 12]
+```
+
+If a border cell does not belong to this safe group, the wall removal is rejected.
+
+This guarantees the maze boundary always stays “tight”.
+
+---
+
+## Interior Cells Must Keep At Least One Wall
+
+Interior cells are less fragile but still must not become fully open.
+If a cell loses too many walls, it turns into a room center.
+
+To prevent this, interior cells must always keep **at least one wall**.
+
+These values represent cells with a single remaining wall:
+
+```python
+cells_with_one_wall_only = [1, 2, 4, 8]
+```
+
+If an interior cell is already down to one wall, we refuse to remove another one.
+
+This ensures every cell always contributes to corridor structure.
+
+---
+
+# 2) Directional Corridor Scan (The 6-Cell Safety Check)
+
+Even if a cell passes the topology rules, removing a wall could still create a long open area.
+To prevent this, the algorithm performs a **directional scan** before committing.
+
+We look in the direction of the wall being removed and inspect:
+
+* 3 cells forward
+* 3 cells backward
+
+That gives **6 cells aligned with the wall**.
+
+For each of those cells, we check whether the wall we want to remove already does not exist.
+
+If a cell does not have that wall, it means the corridor is already open in that direction.
+
+We count how many such open cells exist:
+
+```python
+empty = number of aligned cells already open
+```
+
+---
+
+## The Final Safety Rule
+
+```python
+if empty < 3:
+    remove the wall
+```
+
+If **3 or more aligned cells are already open**, removing the wall would create a wide open region.
+
+So we cancel the removal.
+
+This rule guarantees:
+
+* corridors never become long open strips
+* wide areas cannot grow
+* 3×3 open zones cannot emerge
+
+---
+
+# Result
+
+Thanks to these two checks:
+
+1. Edge cells keep ≥ 2 walls
+2. Interior cells keep ≥ 1 wall
+3. A 6-cell directional scan blocks long openings
+
+Wall removal becomes **safe and controlled**, and the maze never develops large open spaces.
+
+---
 ## 🎓 The Hidden “42” Pattern
 
 At the very beginning of generation, the maze secretly embeds a small **“42” pattern** at the center of the grid.

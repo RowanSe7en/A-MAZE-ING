@@ -2,7 +2,7 @@ PYTHON = python3
 PIP = pip3
 MAIN = a_maze_ing.py
 CONFIG = config.txt
-
+VENV_NAME := $(shell python3 -c "import os,sys; print(os.path.basename(sys.prefix))")
 
 all: run
 
@@ -22,7 +22,7 @@ clean:
 
 
 lint:
-	python3 -m flake8 .
+	python3 -m flake8 . --exclude=$(VENV_NAME)
 	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs --explicit-package-bases
 
 lint-strict:
@@ -30,4 +30,4 @@ lint-strict:
 	mypy . --strict --explicit-package-bases
 
 
-.PHONY: all run clean debug
+.PHONY: all run clean debug lint lint-strict

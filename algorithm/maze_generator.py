@@ -1,10 +1,10 @@
+from algorithm.ascii_landing import ascii_landing
 from typing import List, Tuple, Dict, Optional
 from algorithm.theme_palette import themes
 from algorithm.clear import clear
-from algorithm.ascii_landing import ascii_landing
+from typing import TypedDict
 import random
 import time
-from typing import TypedDict
 
 
 class MazeData(TypedDict):
@@ -225,7 +225,7 @@ class MazeGenerator:
             else:
                 stack.pop()
 
-        if not generator_time and is_perfect:
+        if not generator_time and not is_perfect:
             clear(self.is_ft_printable)
             self.maze_render()
 
@@ -240,7 +240,7 @@ class MazeGenerator:
             random.seed(self.seed + 1)
 
         y, x = self.exit_
-        randomizer = [False, True]
+        randomizer = [True]
         non_perfect_visited: List[List[bool]] = [
             [False for _ in range(self.width)]
             for _ in range(self.height)
@@ -267,10 +267,56 @@ class MazeGenerator:
                         neighbors.append((ny, nx, wall, dire))
 
             if neighbors:
+
                 ny, nx, wall, dire = random.choice(neighbors)
 
-                self.maze[y][x] &= ~wall
-                self.maze[ny][nx] &= ~MazeGenerator.opposite[wall]
+                cells_with_one_wall_only = [1, 2, 4, 8]
+                cells_with_two_walls_only = [3, 5, 6, 9, 10, 12]
+
+                cell_value = self.maze[y][x]
+                is_inner_cell = (0 < y < self.height - 1 and
+                                 0 < x < self.width - 1)
+                is_edge_cell = (0 <= y <= self.height - 1 and
+                                0 < x < self.width - 1)
+
+                safe_inner = (is_inner_cell and
+                              cell_value not in cells_with_one_wall_only)
+                safe_edge = (
+                    is_edge_cell
+                    and cell_value not in cells_with_two_walls_only
+                    and cell_value not in cells_with_one_wall_only
+                )
+
+                if safe_inner or safe_edge:
+
+                    empty = 0
+
+                    for i in range(1, 4):
+
+                        if wall in (1, 4):
+
+                            if (x + i < self.width and
+                                    not (self.maze[y][x + i] & wall)):
+                                empty += 1
+
+                            if (x - i >= 0 and
+                                    not (self.maze[y][x - i] & wall)):
+                                empty += 1
+
+                        elif wall in (2, 8):
+
+                            if (y + i < self.height and
+                                    not (self.maze[y + i][x] & wall)):
+                                empty += 1
+
+                            if (y - i >= 0 and
+                                    not (self.maze[y - i][x] & wall)):
+                                empty += 1
+
+                    if empty < 3:
+
+                        self.maze[y][x] &= ~wall
+                        self.maze[ny][nx] &= ~MazeGenerator.opposite[wall]
 
                 stack.append((ny, nx))
                 non_perfect_visited[ny][nx] = True
@@ -298,7 +344,7 @@ def generator_entery(
     is_perfect: bool,
     generator_time: float,
     is_ft_printable: bool,
-) -> MazeData:  # <-- use the TypedDict
+) -> MazeData:
 
     maze_gen = MazeGenerator(
         width,
@@ -313,20 +359,24 @@ def generator_entery(
         maze_gen.where_is_42()
 
     for cord in maze_gen.ft_coords:
+
         if cord == entry:
+
             ascii_landing()
             print(
                 "The entery is placed inside of the 42 pattern, "
                 "please enter another cords"
             )
-            exit(1)
+            exit(0)
+
         elif cord == exit_:
+
             ascii_landing()
             print(
                 "The exit is placed inside of the 42 pattern, "
                 "please enter another cords"
             )
-            exit(1)
+            exit(0)
 
     maze = maze_gen.generate_perfect_maze(generator_time, is_perfect)
 

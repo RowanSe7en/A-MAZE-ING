@@ -36,7 +36,7 @@ def ascii_render(width: int, height: int,
             elif (y, x) == exit_:
                 content = " E "
             elif (y, x) in path_coords:
-                content = " . "
+                content = " P "
             elif maze[y][x] == 16:
                 content = " # "
             else:
@@ -324,6 +324,9 @@ def MazeRenderer(width: int, height: int,
 
     path_coords.add(entry)
     path_coords_list.reverse()
+
+    # ascii_render(width, height, entry, exit_, maze, path_coords)
+    # emoji_render(width, height, entry, exit_, maze, path_coords, is_solved)
 
     if solve_time:
 

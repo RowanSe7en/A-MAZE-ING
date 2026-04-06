@@ -1,11 +1,11 @@
 # ----------------------------------Mandatory Keys---------------------------------
 
-HEIGHT=15
-WIDTH=17
+HEIGHT=25
+WIDTH=27
 ENTRY=0,0
-EXIT=14,16
+EXIT=24,26
 OUTPUT_FILE=output_maze.txt
-PERFECT=True
+PERFECT=False
 
 # ----------------------------------Optional SEED-----------------------------------
 
