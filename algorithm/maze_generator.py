@@ -4,6 +4,13 @@ from algorithm.clear import clear
 from algorithm.ascii_landing import ascii_landing
 import random
 import time
+from typing import TypedDict
+
+
+class MazeData(TypedDict):
+
+    maze: List[List[int]]
+    ft_coords: List[Tuple[int, int]]
 
 
 class MazeGenerator:
@@ -291,7 +298,7 @@ def generator_entery(
     is_perfect: bool,
     generator_time: float,
     is_ft_printable: bool,
-) -> Dict[str, List]:
+) -> MazeData:  # <-- use the TypedDict
 
     maze_gen = MazeGenerator(
         width,

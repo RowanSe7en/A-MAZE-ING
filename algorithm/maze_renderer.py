@@ -211,8 +211,8 @@ def ansi_render(width: int, height: int,
                     left = ft_pattern
                 elif (
                     (y, x) in path_coords
-                    or (y, x) == entry
-                    or (y, x) == exit_
+                    or ((y, x) == entry and (y, x) in path_coords)
+                    or ((y, x) == exit_ and (y, x) in path_coords)
                 ) and (
                     (
                         y > 0
@@ -239,8 +239,8 @@ def ansi_render(width: int, height: int,
             if (
                 (
                     (y, x) in path_coords
-                    or (y, x) == entry
-                    or (y, x) == exit_
+                    or ((y, x) == entry and (y, x) in path_coords)
+                    or ((y, x) == exit_ and (y, x) in path_coords)
                 )
                 and (
                     (

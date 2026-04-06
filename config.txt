@@ -18,6 +18,6 @@ SOLVE=BFS
 # -------------------------------------Animation------------------------------------
 
 # GENERATE_TIME better to be longer than 0.04
-ANIMATION=False
+ANIMATION=True
 GENERATE_TIME=0.01
 SOLVE_TIME=0.02
