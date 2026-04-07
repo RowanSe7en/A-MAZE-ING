@@ -1,9 +1,9 @@
 # ----------------------------------Mandatory Keys---------------------------------
 
-HEIGHT=25
-WIDTH=27
+HEIGHT=10
+WIDTH=10
 ENTRY=0,0
-EXIT=24,26
+EXIT=9,9
 OUTPUT_FILE=output_maze.txt
 PERFECT=False
 

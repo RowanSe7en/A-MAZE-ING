@@ -78,12 +78,20 @@ def color_menu() -> str:
         f"{GOLD}         ║{RESET}"
     )
     print(
-        f"{GOLD}║{RESET}  {BOLD}{CYAN}7 - Party Mode{RESET}              "
+        f"{GOLD}║{RESET}  {BOLD}{CYAN}7 - Random Theme{RESET}            "
         f"{GOLD}         ║{RESET}"
     )
     print(f"{GOLD}╚═══════════════════════════════════════╝{RESET}")
 
     theme_choice: str = input(f"{BOLD}{MAGENTA}Choose Theme: {RESET}")
+    try:
+        int_theme = int(theme_choice)
+        if int_theme < 1 or int_theme > 7:
+            print("Invalid choice, choose again.")
+            return color_menu()
+    except ValueError:
+        print("Invalid choice, choose again.")
+        return color_menu()
     return theme_choice
 
 
@@ -118,7 +126,7 @@ def change_config() -> Dict[str, Optional[str]]:
     print(f"{GOLD}║{RESET}  {GREEN}8 - Solve Time{RESET} (#.##) "
           f"{GOLD}               ║{RESET}")
     print(
-        f"{GOLD}║{RESET}  {GREEN}9 - Perfect Maze{RESET} (true/false)"
+        f"{GOLD}║{RESET}  {GREEN}9 - Bo back home{RESET}"
         f"{GOLD}        ║{RESET}"
         )
 
@@ -132,12 +140,19 @@ def change_config() -> Dict[str, Optional[str]]:
             f"{BOLD}{CYAN}Enter New Value "
             f"(check example above): {RESET}"
         )
-        if val == "":
-            new_dict: Dict[str, Optional[str]] = {data_key: None}
-            return new_dict
+        while val == "":
+            print("Invalid choice, choose again.")
+            val: str = input(
+                f"{BOLD}{CYAN}Enter New Value "
+                f"(check example above): {RESET}"
+            )
 
         new_dict = {data_key: val}
+    elif int(key_chois) == 9:
+        print("Going back home.")
+        return {}
     else:
-        raise ValueError("Oops! Invalid choice.")
+        print("Invalid choice, choose again.")
+        change_config()
 
     return new_dict

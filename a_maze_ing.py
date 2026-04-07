@@ -57,9 +57,12 @@ def renderer(
 
 
 def entery_point(data: Dict[str, Any],
-                 is_ft_printable: bool) -> Dict[str, Any]:
+                 is_ft_printable: bool,
+                 theme_id: Optional[str] = None) -> Dict[str, Any]:
 
     algorithm.clear()
+
+    print(theme_id)
 
     maze = algorithm.generator_entery(
         data["width"],
@@ -69,7 +72,8 @@ def entery_point(data: Dict[str, Any],
         data["exit"],
         data["perfect"],
         data["generate_time"],
-        is_ft_printable
+        is_ft_printable,
+        theme_id
     )
     solve_value: str = str(data.get("solve", ""))
     parents = algorithm.solver_entery(
@@ -84,8 +88,11 @@ def entery_point(data: Dict[str, Any],
 
     return {"maze": maze, "parents": parents}
 
+theme_id = "1"
 
 def main() -> None:
+
+    global theme_id
 
     ascii_landing()
 
@@ -99,7 +106,8 @@ def main() -> None:
         is_colored = False
 
         input("Press ENTER key to start... ")
-        maze_data = entery_point(data, is_ft_printable)
+        maze_data = entery_point(data, is_ft_printable, theme_id)
+
         while True:
 
             try:
@@ -116,7 +124,7 @@ def main() -> None:
 
             if num == 1:
                 is_solved = False
-                maze_data = entery_point(data, is_ft_printable)
+                maze_data = entery_point(data, is_ft_printable, theme_id)
 
             elif num == 2:
 
@@ -149,25 +157,46 @@ def main() -> None:
                     theme_id
                 )
                 is_colored = False
+
             elif num == 4:
 
                 key_change: Dict[str, Any] = change_config()
-                dict_key = list(key_change.keys())[0]
 
-                if dict_key in ["generate_time", "solve_time"]:
-                    data["animation"] = True
+                if key_change:
 
-                new_dict = check_prop(key_change, True)
-                print(new_dict)
-                data[dict_key] = new_dict[dict_key]
+                    dict_key = list(key_change.keys())[0]
 
-                is_colored = False
-                is_solved = False
+                    if dict_key in ["generate_time", "solve_time"]:
+                        data["animation"] = True
 
-                if data['width'] < 9 or data['height'] < 7:
-                    maze_data = entery_point(data, False)
-                else:
-                    maze_data = entery_point(data, True)
+                    new_dict = check_prop(key_change, True)
+                    data[dict_key] = new_dict[dict_key]
+
+                    is_colored = False
+                    is_solved = False
+
+                    all_keys = [
+                        "width", "height", "entry", "exit",
+                        "seed", "perfect"
+                    ]
+
+                    if dict_key in all_keys:
+
+                        if data['width'] < 9 or data['height'] < 7:
+                            maze_data = entery_point(data, False, theme_id)
+                        else:
+                            maze_data = entery_point(data, True, theme_id)
+
+                    else:
+
+                        renderer(
+                        is_solved,
+                        data,
+                        is_colored,
+                        maze_data['maze']['maze'],
+                        maze_data['parents'],
+                        maze_data['maze']['ft_coords']
+                    )
 
             elif num == 5:
                 print("\nYOU LEFT THE MAZE, SEE YOU LATER ALLIGATOR")

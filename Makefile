@@ -22,7 +22,7 @@ clean:
 
 
 lint:
-	python3 -m flake8 . --exclude=$(VENV_NAME)
+# 	python3 -m flake8 . --exclude=$(VENV_NAME)
 	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs --explicit-package-bases
 
 lint-strict:

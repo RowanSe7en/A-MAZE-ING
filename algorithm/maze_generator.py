@@ -1,3 +1,4 @@
+from algorithm.theme_palette import themes, theme_mapper
 from algorithm.ascii_landing import ascii_landing
 from typing import List, Tuple, Dict, Optional
 from algorithm.theme_palette import themes
@@ -120,14 +121,17 @@ class MazeGenerator:
             self.maze[ft_y][ft_x] += 1
             self.ft_coords.append((ft_y, ft_x))
 
-    def maze_render(self) -> None:
+    def maze_render(self, theme_id: Optional[str] = None) -> None:
 
-        theme = themes["ash_lava"]
-        wall_color = theme["wall_color"]
-        road_color = theme["road_color"]
-        entery_color = theme["entery_color"]
-        exit_color = theme["exit_color"]
-        ft_pattern = theme["ft_pattern"]
+        theme_mapper_id = theme_mapper.get(theme_id, None)
+        theme = themes[theme_mapper_id]
+
+        wall_color = theme['wall_color']
+        road_color = theme['road_color']
+        path_color = theme['path_color']
+        entery_color = theme['entery_color']
+        exit_color = theme['exit_color']
+        ft_pattern = theme['ft_pattern']
 
         for y in range(self.height):
             print(wall_color, end="")
@@ -188,6 +192,7 @@ class MazeGenerator:
         self,
         generator_time: float,
         is_perfect: bool,
+        theme_id: Optional[str] = None
     ) -> List[List[int]]:
 
         if self.seed is not None:
@@ -220,20 +225,21 @@ class MazeGenerator:
 
                 if generator_time:
                     clear(self.is_ft_printable)
-                    self.maze_render()
+                    self.maze_render(theme_id)
                     time.sleep(generator_time)
             else:
                 stack.pop()
 
         if not generator_time and not is_perfect:
             clear(self.is_ft_printable)
-            self.maze_render()
+            self.maze_render(theme_id)
 
         return self.maze
 
     def generate_non_perfect_maze(
         self,
         generator_time: float,
+        theme_id: Optional[str] = None
     ) -> List[List[int]]:
 
         if self.seed is not None:
@@ -323,14 +329,14 @@ class MazeGenerator:
 
                 if generator_time:
                     clear(self.is_ft_printable)
-                    self.maze_render()
+                    self.maze_render(theme_id)
                     time.sleep(generator_time)
             else:
                 stack.pop()
 
         if not generator_time:
             clear(self.is_ft_printable)
-            self.maze_render()
+            self.maze_render(theme_id)
 
         return self.maze
 
@@ -344,6 +350,7 @@ def generator_entery(
     is_perfect: bool,
     generator_time: float,
     is_ft_printable: bool,
+    theme_id: Optional[str] = None
 ) -> MazeData:
 
     maze_gen = MazeGenerator(
@@ -378,9 +385,9 @@ def generator_entery(
             )
             exit(0)
 
-    maze = maze_gen.generate_perfect_maze(generator_time, is_perfect)
+    maze = maze_gen.generate_perfect_maze(generator_time, is_perfect, theme_id)
 
     if not is_perfect:
-        maze = maze_gen.generate_non_perfect_maze(generator_time)
+        maze = maze_gen.generate_non_perfect_maze(generator_time, theme_id)
 
     return {"maze": maze, "ft_coords": maze_gen.ft_coords}
