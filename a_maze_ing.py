@@ -62,8 +62,6 @@ def entery_point(data: Dict[str, Any],
 
     algorithm.clear()
 
-    print(theme_id)
-
     maze = algorithm.generator_entery(
         data["width"],
         data["height"],
@@ -75,6 +73,7 @@ def entery_point(data: Dict[str, Any],
         is_ft_printable,
         theme_id
     )
+
     solve_value: str = str(data.get("solve", ""))
     parents = algorithm.solver_entery(
         data["width"],
@@ -111,16 +110,12 @@ def main() -> None:
         while True:
 
             try:
-                num: Union[int, str] = menu()
 
-                if num == "":
-                    print("YOU LEFT THE MAZE, SEE YOU LATER ALLIGATOR")
-                    exit(0)
-                else:
-                    num = int(num)
+                num: Union[int, str] = menu()
+                num = int(num)
 
             except Exception:
-                raise ValueError("choise Not Valid number")
+                pass
 
             if num == 1:
                 is_solved = False

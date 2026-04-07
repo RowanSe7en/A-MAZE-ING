@@ -158,27 +158,23 @@ def ansi_render(width: int, height: int,
 
     if is_colored:
 
-        if theme_id == "7":
+        if theme_id == "8":
 
             random.seed(time.time())
             random_theme_key = random.choice(list(themes.keys()))
             theme = themes[random_theme_key]
             previous_color = theme
             is_changed = True
+            theme_mapper["8"] = random_theme_key
 
         else:
 
             theme_mapper_id = theme_mapper.get(theme_id, None)
 
-            if theme_mapper_id:
+            theme = themes[theme_mapper_id]
+            previous_color = theme
+            is_changed = True
 
-                theme = themes[theme_mapper_id]
-                previous_color = theme
-                is_changed = True
-
-            else:
-                theme = themes['ash_lava']
-                print("Invalid Theme ID, return to the default theme")
 
     elif not is_colored and is_changed:
         theme = previous_color

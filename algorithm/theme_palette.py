@@ -26,17 +26,28 @@ themes: Dict[str, Dict[str, str]] = {
         "ft_pattern": "\033[48;5;211m  \033[0m",  # Vivid blossom
     },
     "crimson_void": {
-        "wall_color": "\033[48;5;16m  \033[0m",   # Deep void black-red
-        "road_color": "\033[48;5;52m  \033[0m",   # Dark crimson shadow
-        "path_color": "\033[48;5;51m  \033[0m",
-        "entery_color": "\033[48;5;160m  \033[0m",  # Deep crimson entry
-        "exit_color": "\033[48;5;197m  \033[0m",  # Hot magenta-red exit
-        "ft_pattern": "\033[48;5;160m  \033[0m",  # Crimson trail
+        # near-black with red hint (void background)
+        "wall_color": "\033[48;5;232m  \033[0m",
+
+        # very dark dried-blood red (maze floor)
+        "road_color": "\033[48;5;124m  \033[0m",
+
+        # rich crimson path (main route)
+        "path_color": "\033[48;5;214m  \033[0m",
+
+        # bright blood-red entry (strong contrast)
+        "entery_color": "\033[48;5;160m  \033[0m",
+
+        # glowing hell-red / neon exit (final goal pop)
+        "exit_color": "\033[48;5;196m  \033[0m",
+
+        # trail footprint slightly darker than entry
+        "ft_pattern": "\033[48;5;196m  \033[0m",
     },
     "toxic_jungle": {
         "wall_color": "\033[48;5;232m  \033[0m",  # Pitch black
         "road_color": "\033[48;5;22m  \033[0m",   # Dark toxic green
-        "path_color": "\033[48;5;201m  \033[0m",
+        "path_color": "\033[48;5;34m  \033[0m",
         "entery_color": "\033[48;5;46m  \033[0m",   # Radioactive green entry
         "exit_color": "\033[48;5;190m  \033[0m",  # Toxic lime exit
         "ft_pattern": "\033[48;5;46m  \033[0m",   # Neon green trail
@@ -49,6 +60,14 @@ themes: Dict[str, Dict[str, str]] = {
         "exit_color": "\033[48;5;202m  \033[0m",  # Dusk orange
         "ft_pattern": "\033[48;5;214m  \033[0m",  # Amber footprint
     },
+    "cotton_candy": {
+        "wall_color": "\033[48;5;54m  \033[0m",
+        "road_color": "\033[48;5;141m  \033[0m",
+        "path_color": "\033[48;5;198m  \033[0m",
+        "entery_color": "\033[48;5;212m  \033[0m",
+        "exit_color": "\033[48;5;219m  \033[0m",
+        "ft_pattern": "\033[48;5;199m  \033[0m",
+    },
 }
 
 theme_mapper: Dict[str, str] = {
@@ -58,4 +77,6 @@ theme_mapper: Dict[str, str] = {
     "4": "crimson_void",
     "5": "toxic_jungle",
     "6": "sandstorm",
+    "7": "cotton_candy",
+    "8": ""
 }
