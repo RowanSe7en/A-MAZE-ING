@@ -1,8 +1,7 @@
-from algorithm.theme_palette import themes, theme_mapper
-from typing import List, Tuple, Dict, Optional
-from algorithm.clear import clear
-import random
 import time
+import random
+import algorithm
+from typing import List, Tuple, Dict, Optional
 
 
 class MazeGenerator:
@@ -153,12 +152,12 @@ class MazeGenerator:
         if theme_id is None:
             theme_id = '1'   # or your default theme id
 
-        theme_mapper_id = theme_mapper.get(theme_id)
+        theme_mapper_id = algorithm.theme_mapper.get(theme_id)
 
         if theme_mapper_id is None:
             theme_mapper_id = 'ash_lava'  # fallback only for typing safety
 
-        theme = themes[theme_mapper_id]
+        theme = algorithm.themes[theme_mapper_id]
 
         wall_color = theme['wall_color']
         road_color = theme['road_color']
@@ -276,14 +275,14 @@ class MazeGenerator:
                 self.visited[ny][nx] = True
 
                 if generator_time:
-                    clear(self.is_ft_printable)
+                    algorithm.clear(self.is_ft_printable)
                     self.maze_render(theme_id)
                     time.sleep(generator_time)
             else:
                 stack.pop()
 
         if not generator_time and is_perfect:
-            clear(self.is_ft_printable)
+            algorithm.clear(self.is_ft_printable)
             self.maze_render(theme_id)
 
         return self.maze
@@ -396,7 +395,7 @@ class MazeGenerator:
                 non_perfect_visited[ny][nx] = True
 
                 if generator_time:
-                    clear(self.is_ft_printable)
+                    algorithm.clear(self.is_ft_printable)
                     self.maze_render(theme_id)
                     time.sleep(generator_time)
 
@@ -404,7 +403,7 @@ class MazeGenerator:
                 stack.pop()
 
         if not generator_time:
-            clear(self.is_ft_printable)
+            algorithm.clear(self.is_ft_printable)
             self.maze_render(theme_id)
 
         return self.maze

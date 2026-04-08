@@ -1,6 +1,6 @@
-import random
-from mazegen.maze_generator import *  # noqa: F403, F401
 from typing import List, Tuple, Dict
+import mazegen
+import random
 
 
 class MazeSolver:
@@ -72,7 +72,7 @@ class MazeSolver:
             if (y, x) == self.exit_:
                 break
 
-            for dy, dx, wall, direc in MazeGenerator.directions:
+            for dy, dx, wall, direc in mazegen.MazeGenerator.directions:
 
                 ny = y + dy
                 nx = x + dx
@@ -130,7 +130,7 @@ class MazeSolver:
             if (y, x) == self.exit_:
                 break
 
-            for dy, dx, wall, direc in MazeGenerator.directions:
+            for dy, dx, wall, direc in mazegen.MazeGenerator.directions:
 
                 ny = y + dy
                 nx = x + dx

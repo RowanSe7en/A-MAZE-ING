@@ -1,8 +1,8 @@
-import time
-import random
-from .clear import clear
 from .theme_palette import themes, theme_mapper
 from typing import List, Tuple, Set, Dict, Optional
+from .clear import clear
+import random
+import time
 
 
 def ascii_render(width: int, height: int,
@@ -373,15 +373,18 @@ def MazeRenderer(width: int, height: int,
     # ascii_render(width, height, entry, exit_, maze, path_coords)
     # emoji_render(width, height, entry, exit_, maze, path_coords, is_solved)
 
+    animated_path_coords: Set[Tuple[int, int]] = set()
+
     if solve_time:
 
-        animated_path_coords: Set[Tuple[int, int]] = set()
         for i in range(len(path_coords_list)):
             clear()
             animated_path_coords.add(path_coords_list[i])
-            is_already_changed = ansi_render(width, height, entry, exit_, maze,
-                        animated_path_coords, is_solved, is_colored,
-                        theme_id, parents, ft_coords, is_already_changed)
+            is_already_changed = ansi_render(width, height, entry, exit_,
+                                             maze, animated_path_coords,
+                                             is_solved, is_colored,
+                                             theme_id, parents, ft_coords,
+                                             is_already_changed)
             if is_solved:
                 if theme_id == "9":
                     time.sleep(0.09)
@@ -391,6 +394,8 @@ def MazeRenderer(width: int, height: int,
     else:
 
         clear()
-        is_already_changed = ansi_render(width, height, entry, exit_, maze,
-                    path_coords, is_solved, is_colored,
-                    theme_id, parents, ft_coords, is_already_changed)
+        is_already_changed = ansi_render(width, height, entry, exit_,
+                                         maze, animated_path_coords,
+                                         is_solved, is_colored,
+                                         theme_id, parents, ft_coords,
+                                         is_already_changed)

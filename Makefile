@@ -28,7 +28,7 @@ lint:
 	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs --explicit-package-bases
 
 lint-strict:
-	python3 -m flake8 .
+	python3 -m flake8 . --exclude=$(VENV_NAME)
 	mypy . --strict --explicit-package-bases
 
 
