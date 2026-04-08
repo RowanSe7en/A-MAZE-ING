@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mazegen"
+version = "1.0.0"
+description = "A maze generation library – 1337 42 project a-maze-ing"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    { name = "brouane" },
+    { name = "bmarbouh" }
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mazegen*"]

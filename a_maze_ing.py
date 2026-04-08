@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-from typing import Any, Dict, Optional, Union
-from parsing.parse_data import check_prop, check_all_available
-from parsing.parse_data import open_file, parse_data
-from algorithm.ascii_landing import ascii_landing
-from menu import menu, color_menu, change_config
-import algorithm
 import sys
+import parsing
+import algorithm
 from generator_entery import generator_entery
+from typing import Any, Dict, Optional, Union
+from menu import menu, color_menu, change_config
 
 
 def get_data() -> Dict[str, Any]:
@@ -39,11 +37,11 @@ def get_data() -> Dict[str, Any]:
         print(f"Error : {sys.argv[1]} not a valid file")
         sys.exit(0)
 
-    f = open_file(sys.argv[1])
+    f = parsing.open_file(sys.argv[1])
 
-    parse = parse_data(f)
-    check_proprety = check_prop(parse)
-    require = check_all_available(check_proprety)
+    parse = parsing.parse_data(f)
+    check_proprety = parsing.check_prop(parse)
+    require = parsing.check_all_available(check_proprety)
 
     if require["data"]["output_file"] == sys.argv[1]:
         raise ValueError(
@@ -60,7 +58,8 @@ def renderer(
     maze: Any,
     parents: Any,
     ft_coords: Any,
-    theme_id: Optional[str] = None
+    theme_id: Optional[str] = None,
+    is_already_changed: bool = False
 ) -> None:
     """
     Render the maze using the MazeRenderer from the algorithm module.
@@ -85,7 +84,8 @@ def renderer(
         is_colored,
         theme_id or "",  # <-- ensure it's always a string
         data["solve_time"],
-        ft_coords
+        ft_coords,
+        is_already_changed
     )
 
 
@@ -152,7 +152,7 @@ def main() -> None:
     """
     global theme_id
 
-    ascii_landing()
+    algorithm.ascii_landing()
 
     try:
 
@@ -200,6 +200,10 @@ def main() -> None:
 
                 theme_id = color_menu()
 
+                is_not_party_mode = True
+                if theme_id == "9":
+                    is_not_party_mode = False
+
                 is_colored = True
                 renderer(
                     is_solved,
@@ -208,7 +212,8 @@ def main() -> None:
                     maze_data['maze']['maze'],
                     maze_data['parents'],
                     maze_data['maze']['ft_coords'],
-                    theme_id
+                    theme_id,
+                    is_not_party_mode
                 )
                 is_colored = False
 
@@ -223,7 +228,7 @@ def main() -> None:
                     if dict_key in ["generate_time", "solve_time"]:
                         data["animation"] = True
 
-                    new_dict = check_prop(key_change, True)
+                    new_dict = parsing.check_prop(key_change, True)
                     data[dict_key] = new_dict[dict_key]
 
                     is_colored = False
@@ -265,8 +270,9 @@ def main() -> None:
         exit(0)
 
     except Exception as error:
-        ascii_landing()
+        algorithm.ascii_landing()
         print(f"Handeled Error: {error}")
 
 
-main()
+if __name__ == "__main__":
+    main()

@@ -1,8 +1,8 @@
-from typing import List, Tuple, Set, Dict, Optional
-from algorithm.theme_palette import themes, theme_mapper
-from algorithm.clear import clear
-import random
 import time
+import random
+from .clear import clear
+from .theme_palette import themes, theme_mapper
+from typing import List, Tuple, Set, Dict, Optional
 
 
 def ascii_render(width: int, height: int,
@@ -169,7 +169,8 @@ def ansi_render(width: int, height: int,
                 path_coords: Set[Tuple[int, int]], is_solved: bool,
                 is_colored: bool, theme_id: str,
                 parents: Dict[Tuple[int, int], Tuple[int, int, int]],
-                ft_coords: Set[Tuple[int, int]]) -> None:
+                ft_coords: Set[Tuple[int, int]],
+                is_already_changed: bool) -> bool:
     """
     Render the maze using ANSI color themes.
 
@@ -183,7 +184,18 @@ def ansi_render(width: int, height: int,
 
     if is_colored:
 
-        if theme_id == "8":
+        if theme_id == "8" and is_already_changed:
+
+            is_already_changed = False
+
+            random.seed(time.time())
+            random_theme_key = random.choice(list(themes.keys()))
+            theme = themes[random_theme_key]
+            previous_color = theme
+            is_changed = True
+            theme_mapper["8"] = random_theme_key
+
+        elif theme_id == "9":
 
             random.seed(time.time())
             random_theme_key = random.choice(list(themes.keys()))
@@ -324,6 +336,8 @@ def ansi_render(width: int, height: int,
 
     printer(wall_color, False)
 
+    return is_already_changed
+
 
 def MazeRenderer(width: int, height: int,
                  entry: Tuple[int, int], exit_: Tuple[int, int],
@@ -331,7 +345,8 @@ def MazeRenderer(width: int, height: int,
                  parents: Dict[Tuple[int, int], Tuple[int, int, int]],
                  is_solved: bool, is_colored: bool, theme_id: str,
                  solve_time: Optional[float],
-                 ft_coords: Set[Tuple[int, int]]) -> None:
+                 ft_coords: Set[Tuple[int, int]],
+                 is_already_changed: bool) -> None:
     """
     High-level renderer responsible for displaying the maze and solution.
 
@@ -364,15 +379,18 @@ def MazeRenderer(width: int, height: int,
         for i in range(len(path_coords_list)):
             clear()
             animated_path_coords.add(path_coords_list[i])
-            ansi_render(width, height, entry, exit_, maze,
+            is_already_changed = ansi_render(width, height, entry, exit_, maze,
                         animated_path_coords, is_solved, is_colored,
-                        theme_id, parents, ft_coords)
+                        theme_id, parents, ft_coords, is_already_changed)
             if is_solved:
-                time.sleep(solve_time)
+                if theme_id == "9":
+                    time.sleep(0.09)
+                else:
+                    time.sleep(solve_time)
 
     else:
 
         clear()
-        ansi_render(width, height, entry, exit_, maze,
+        is_already_changed = ansi_render(width, height, entry, exit_, maze,
                     path_coords, is_solved, is_colored,
-                    theme_id, parents, ft_coords)
+                    theme_id, parents, ft_coords, is_already_changed)

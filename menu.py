@@ -88,13 +88,17 @@ def color_menu() -> str:
         f"{GOLD}║{RESET}  {BOLD}{CYAN}8 - Random Theme{RESET}"
         f"                     {GOLD}║{RESET}"
     )
+    print(
+        f"{GOLD}║{RESET}  {BOLD}{MAGENTA}9 - Party {BOLD}{RED}Mode{RESET}"
+        f"                       {GOLD}║{RESET}"
+    )
 
     print(f"{GOLD}╚═══════════════════════════════════════╝{RESET}")
 
     theme_choice: str = input(f"{BOLD}{MAGENTA}Choose Theme: {RESET}")
     try:
         int_theme = int(theme_choice)
-        if int_theme < 1 or int_theme > 8:
+        if int_theme < 1 or int_theme > 9:
             print("Invalid choice, choose again.")
             return color_menu()
     except ValueError:

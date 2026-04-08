@@ -220,8 +220,6 @@ We initially started by implementing the parsing system to handle inputs and con
 
 ### Tools Used
 
-### Tools Used
-
 * **Python 3.8+** — sole language and runtime
 * **Git** — version control and collaboration
 * **draw.io** — designing flowcharts and maze structures

@@ -1,5 +1,4 @@
 PYTHON = python3
-PIP = pip3
 MAIN = a_maze_ing.py
 CONFIG = config.txt
 VENV_NAME := $(shell python3 -c "import os,sys; print(os.path.basename(sys.prefix))")
@@ -8,6 +7,9 @@ all: run
 
 run:
 	$(PYTHON) $(MAIN) $(CONFIG)
+
+install:
+	pip install dist/mazegen-1.0.0-py3-none-any.whl
 
 debug:
 	$(PYTHON) -m pdb $(MAIN) $(CONFIG)
