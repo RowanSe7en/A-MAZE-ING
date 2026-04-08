@@ -1,6 +1,5 @@
 import random
-from mazegen.maze_generator import *  # noqa: F403, F401
-
+from mazegen.maze_generator import MazeGenerator
 from typing import List, Tuple, Dict
 
 

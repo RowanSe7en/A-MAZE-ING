@@ -10,7 +10,8 @@ class MazeData(TypedDict):
 
     Attributes:
         maze (List[List[int]]): 2D list representing the maze cells.
-        ft_coords (List[Tuple[int, int]]): Coordinates of the "42 pattern" cells.
+        ft_coords (List[Tuple[int, int]]):
+        Coordinates of the "42 pattern" cells.
     """
     maze: List[List[int]]
     ft_coords: List[Tuple[int, int]]
@@ -28,7 +29,8 @@ def generator_entery(
     theme_id: Optional[str] = None
 ) -> MazeData:
     """
-    Generates a maze with optional visual features and validation for entry and exit points.
+    Generates a maze with optional visual features
+    and validation for entry and exit points.
 
     Args:
         width (int): Width of the maze.
@@ -36,14 +38,20 @@ def generator_entery(
         seed (Optional[int]): Random seed for deterministic maze generation.
         entry (Tuple[int, int]): Coordinates (y, x) of the maze entry point.
         exit_ (Tuple[int, int]): Coordinates (y, x) of the maze exit point.
-        is_perfect (bool): If True, generates a perfect maze (single solution path);
-                           otherwise, adds loops to create a non-perfect maze.
-        generator_time (float): Time delay (in seconds) between each step for animation.
-        is_ft_printable (bool): If True, adds a "42 pattern" to the maze center.
-        theme_id (Optional[str]): Optional theme identifier for rendering the maze.
+        is_perfect (bool):
+            If True, generates a perfect maze (single solution path);
+            otherwise, adds loops to create a non-perfect maze.
+        generator_time (float):
+            Time delay (in seconds) between each step for animation.
+        is_ft_printable (bool):
+            If True, adds a "42 pattern" to the maze center.
+        theme_id (Optional[str]):
+            Optional theme identifier for rendering the maze.
 
     Raises:
-        SystemExit: If the entry or exit coordinates are placed inside the "42 pattern".
+        SystemExit:
+            If the entry or exit coordinates
+            are placed inside the "42 pattern".
 
     Returns:
         MazeData: A dictionary containing:
