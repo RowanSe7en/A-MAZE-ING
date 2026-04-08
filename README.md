@@ -33,22 +33,6 @@ Interestingly, **perfect mazes** (with one unique path between any two points) a
 
 > 💡 *“A labyrinth is not a place to be lost, but a path to be found.”* — Anonymous
 ---
-
-## Table of Contents
-
-  - [Introduction](https://www.google.com/search?q=%23introduction)
-  - [Features](https://www.google.com/search?q=%23features)
-  - [Project Structure](https://www.google.com/search?q=%23project-structure)
-  - [Installation](https://www.google.com/search?q=%23installation)
-  - [Usage](https://www.google.com/search?q=%23usage)
-  - [Configuration File](https://www.google.com/search?q=%23configuration-file)
-  - [Interactive Menu](https://www.google.com/search?q=%23interactive-menu)
-  - [Themes](https://www.google.com/search?q=%23themes)
-  - [Maze Generation & Solving](https://www.google.com/search?q=%23maze-generation--solving)
-  - [The Hidden "42"](https://www.google.com/search?q=%23the-hidden-42)
-  - [Output File Format](https://www.google.com/search?q=%23output-file-format)
-  - [Credits](https://www.google.com/search?q=%23credits)
-
 -----
 
 ## Introduction
@@ -87,12 +71,31 @@ Whether you want a crisp ASCII maze or a glowing neon emoji labyrinth — A-MAZE
 ## Project Structure
 
 ```text
-a-maze-ing/
-├── a_maze_ing.py       # Entry point — run this file
-├── maze_generator.py   # Reusable MazeGenerator module
-├── config.txt          # Example configuration file
-├── setup.py            # pip-installable package setup
-└── README.md           # Documentation
+
+└── a-maze-ing/
+    ├── Makefile
+    ├── README.md
+    ├── a_maze_ing.py
+    ├── algorithm/
+    │   ├── __init__.py
+    │   ├── ascii_landing.py
+    │   ├── clear.py
+    │   ├── maze_renderer.py
+    │   ├── maze_solver.py
+    │   └── theme_palette.py
+    ├── config.txt
+    ├── generator_entery.py
+    ├── mazegen/
+    │   ├── __init__.py
+    │   └── maze_generator.py
+    ├── mazegen-1.0.0-py3-none-any.whl
+    ├── mazegen-1.0.0.tar.gz
+    ├── menu.py
+    ├── parsing/
+    │   ├── __init__.py
+    │   └── parse_data.py
+    ├── pyproject.toml
+    └── requirements.txt
 ```
 
 -----
@@ -102,9 +105,14 @@ a-maze-ing/
 Clone the repository and install:
 
 ```bash
-git clone [https://github.com/yourname/a-maze-ing.git](https://github.com/yourname/a-maze-ing.git)
-cd a-maze-ing
-pip install .
+git clone https://github.com/RowanSe7en/1337_A-MAZE-ING.git
+cd 1337_A-MAZE-ING
+```
+
+You can install the package if you want (optional):
+
+```bash
+make install
 ```
 
 > **Requirements:** Python 3.8+ — no external dependencies.
@@ -117,6 +125,18 @@ Run the program by passing a configuration file as the sole argument:
 
 ```bash
 python3 a_maze_ing.py config.txt
+```
+
+or You can do:
+
+```bash
+make
+```
+
+or You can do:
+
+```bash
+make run
 ```
 
 The program will:
@@ -190,16 +210,16 @@ The parser validates your config before anything is generated:
 After the maze is generated, the program enters an interactive loop — no need to restart between runs.
 
 ```text
-  ┌──────────────────────────────┐
-  │         A-MAZE-ING           │
-  │                              │
-  │  1. Generate a new maze      │
-  │  2. Toggle solution path     │
-  │  3. Change color theme       │
-  │  4. Quit                     │
-  │                              │
-  │  Press ENTER to exit         │
-  └──────────────────────────────┘
+╔═══════════════════════════════════════╗
+║  🧩  A-MAZE-ING EXPLORER  🧩          ║
+╠═══════════════════════════════════════╣
+║  1 - 🔄 Re-generate a new maze        ║
+║  2 - 📍 Show/hide path from entry     ║
+║  3 - 🎨 Rotate maze color             ║
+║  4 - 🛠️ Change Config                 ║
+║  5 - 🚪 Quit                          ║
+╚═══════════════════════════════════════╝
+Choose a number (1-5): 
 ```
 
 | Option | Action |
@@ -207,7 +227,8 @@ After the maze is generated, the program enters an interactive loop — no need 
 | **1** | Generate a new maze |
 | **2** | Toggle solved path visibility |
 | **3** | Change maze color theme |
-| **4** | Quit the program |
+| **4** | Change Config |
+| **5** | Quit the program |
 
 ### 🔄 Regenerate maze
 
@@ -221,15 +242,20 @@ Option **2** toggles the visibility of the solved path. The maze itself never ch
 
 Option **3** opens a dedicated theme selector. Themes temporarily enable colored rendering without modifying the base maze data.
 
-### 🛡️ Error handling & safe exit
+Option **4** opens the configuration panel. From there, the user can modify maze parameters such as dimensions, 
+generation speed, seed usage, and rendering preferences. Once validated, a new maze is generated using the updated configuration.
+
+Option **5** terminates the application immediately and returns the terminal to its normal state.
+
+🛡️ Error handling & safe exit
 
 The interface is designed to never crash silently.
 
-  - Invalid input triggers a readable error message.
-  - Keyboard interruption exits gracefully.
-  - Unexpected errors reset the UI safely.
+Invalid input triggers a readable error message.
+Keyboard interruption exits gracefully.
+Unexpected errors reset the UI safely.
 
-If the user presses **ENTER** or **Ctrl+C**, the program exits cleanly.
+If the user presses Ctrl+C, the program exits cleanly.
 
 -----
 
@@ -237,17 +263,72 @@ If the user presses **ENTER** or **Ctrl+C**, the program exits cleanly.
 
 Option `3` opens the theme selector. Themes apply ANSI colors to walls, floors, paths, entry/exit markers, and the hidden "42" pattern.
 
+```text
+╔═══════════════════════════════════════╗
+║  🎨  SELECT THEME REALM  🎨           ║
+╠═══════════════════════════════════════╣
+║  1 - Ash Lava                         ║
+║  2 - Deep Ocean                       ║
+║  3 - Sakura                           ║
+║  4 - Crimson Void                     ║
+║  5 - Toxic Jungle                     ║
+║  6 - Sandstorm                        ║
+║  7 - Cotton Candy                     ║
+║  8 - Random Theme                     ║
+║  9 - Party Mode                       ║
+╚═══════════════════════════════════════╝
+```
+
 | ID | Theme | Vibe |
 | :--- | :--- | :--- |
-| 1 | **Lava** | Deep reds and molten orange paths |
-| 2 | **Forest** | Earthy greens and natural tones |
-| 3 | **Ice** | Cool blues and frosty whites |
-| 4 | **Neon** | Electric colors on a dark field |
-| 5 | **Sunset** | Warm purples, pinks, and golds |
-| 6 | **Matrix** | Classic green-on-black terminal |
-| 7 | **Party Mode** | Random theme on every render — chaos guaranteed 🎉 |
+| 1 | **Ash Lava** | Dark volcanic tones with glowing magma paths |
+| 2 | **Deep Ocean** | Abyss blues and aquatic hues |
+| 3 | **Sakura** | Soft pinks and spring blossom vibes |
+| 4 | **Crimson Void** | Deep reds and cosmic darkness |
+| 5 | **Toxic Jungle** | Radioactive greens and wild contrasts |
+| 6 | **Sandstorm** | Warm desert yellows and dusty browns |
+| 7 | **Cotton Candy** | Pastel pink and blue dreamland |
+| 8 | **Random Theme** | Picks a random theme once per maze |
+| 9 | **Party Mode** | New random theme every render — chaos guaranteed 🎉 |
 
 > No theme? No problem. The ASCII and Emoji modes work without any ANSI color support.
+
+-----
+
+## Configuration
+
+Option `4` opens the configuration panel. This menu allows live customization of maze generation and solving parameters.
+After validation, a new maze is generated using the updated settings.
+
+```text
+╔═══════════════════════════════════════╗
+║   ⚙️  CHANGE CONFIGURATION  ⚙️          ║
+╠═══════════════════════════════════════╣
+║  1 - Width  (ex: 30)                  ║
+║  2 - Height (ex: 15)                  ║
+║  3 - Entry  (ex: 0,0)                 ║
+║  4 - Exit   (ex: 29,14)               ║
+║  5 - Seed   (ex: 42)                  ║
+║  6 - Perfect Maze (true/false)        ║
+║  7 - Generate Time (#.##)             ║
+║  8 - Solve Time (#.##)                ║
+║  9 - Go back home                     ║
+╚═══════════════════════════════════════╝
+```
+
+| ID | Setting           | Description                                      |
+| :- | :---------------- | :----------------------------------------------- |
+| 1  | **Width**         | Maze horizontal size in cells                    |
+| 2  | **Height**        | Maze vertical size in cells                      |
+| 3  | **Entry**         | Starting coordinate of the maze                  |
+| 4  | **Exit**          | Target coordinate to reach                       |
+| 5  | **Seed**          | Reproducible generation seed                     |
+| 6  | **Perfect Maze**  | Toggle loops (false) or perfect maze (true)      |
+| 7  | **Generate Time** | Delay between generation steps (animation speed) |
+| 8  | **Solve Time**    | Delay between solver steps                       |
+| 9  | **Back Home**     | Return to the main menu                          |
+
+> All inputs are validated. Invalid values trigger a friendly error message and keep the previous configuration.
 
 -----
 
@@ -299,7 +380,7 @@ maze[y][x] = int  # value from 0 to 15
 
 At initialization, every cell starts with all four walls intact (`0xF = 15`):
 
-```
+```text
 +-----+-----+-----+-----+-----+
 | 0xF | 0xF | 0xF | 0xF | 0xF |
 +-----+-----+-----+-----+-----+
@@ -340,7 +421,7 @@ The default algorithm. Produces a spanning tree where exactly one path exists be
 
 **Visited grid at start:**
 
-```
+```text
 +-----+-----+-----+-----+-----+
 |  F  |  F  |  F  |  F  |  F  |   F = False (unvisited)
 +-----+-----+-----+-----+-----+
@@ -515,10 +596,10 @@ To prevent this, the algorithm performs a **directional scan** before committing
 
 We look in the direction of the wall being removed and inspect:
 
-* 3 cells forward
-* 3 cells backward
+* 2 cells forward
+* 2 cells backward
 
-That gives **6 cells aligned with the wall**.
+That gives **4 cells aligned with the wall**.
 
 For each of those cells, we check whether the wall we want to remove already does not exist.
 
@@ -672,11 +753,19 @@ Every generated maze secretly contains a centered **“42” signature**, blendi
 Or with `#` as filled blocks:
 
 ```
- ██   ██   ██████
- ██   ██       ██
- ███████   ██████
-      ██   ██    
-      ██   ██████
+████╗    ████╗████████████╗  
+████╗    ████╗████████████╗  
+████║    ████║╚════════████╗
+████║    ████║╚════════████╗
+██████████████║  ██████████╔╝
+██████████████║  ██████████╔╝
+╚════════████║████╔══════╝  
+╚════════████║████╔══════╝  
+          ████║██████████████╗
+          ████║██████████████╗
+          ╚══╝╚════════════╝
+          ╚══╝╚════════════╝
+     ╚═╝╚══════╝
 ```
 
 -----
@@ -1084,19 +1173,20 @@ However, they behave very differently when it comes to **movement, scaling, and 
 
 ### ASCII Maze
 
------+---+
-| S    . |
-+---+     +
-|    | . |
-
- +      +
-
-| . . |
-+--- +----+
+```text
++---+---+
+| S | . |
++---+ . +
+| . | . |
++ .   . +
+| . . . |
++---+---+
+```
 
 
 ### Emoji Maze
 
+```text
 ⬛⬛⬛⬛⬛
 ⬛🟦⬜⬜⬛
 ⬛⬛⬛⬜⬛
@@ -1104,6 +1194,7 @@ However, they behave very differently when it comes to **movement, scaling, and 
 ⬛⬜⬛⬜⬛
 ⬛⬜⬜⬜⬛
 ⬛⬛⬛⬛⬛
+```
 
 
 ---
@@ -1155,21 +1246,23 @@ So:
 
 ### ASCII
 
+```text
 +---+---+
 | # | # |
 +---+---+
 | # | # |
 +---+---+
-
+```
 
 ### Emoji
 
+```text
 ⬛⬛⬛⬛⬛
 ⬛⬜⬛⬜⬛
 ⬛⬛⬛⬛⬛
 ⬛⬜⬛⬜⬛
 ⬛⬛⬛⬛⬛
-
+```
 
 
 # 🎨 ANSI Rendering ≈ Emoji Rendering
@@ -1329,6 +1422,7 @@ Each selected cell is:
    - Enables special handling during rendering (like connectivity fixes)
 
 notice that numebrs 16 form the 42
+```text
 +-----+-----+-----+-----+-----+-----+-----+-----+-----+
 | 13  |  5  |  1  |  5  |  3  | 13  |  5  |  5  |  3  |
 +-----+-----+-----+-----+-----+-----+-----+-----+-----+
@@ -1344,7 +1438,9 @@ notice that numebrs 16 form the 42
 +-----+-----+-----+-----+-----+-----+-----+-----+-----+
 | 14  | 12  |  5  |  5  |  4  |  5  |  5  |  5  |  6  |
 +-----+-----+-----+-----+-----+-----+-----+-----+-----+
+```
 
+```text
 +---+---+---+---+---+---+---+---+---+
 | S   .   .   .   . |               |
 +---+---+   +---+   +---+---+---+   +
@@ -1360,7 +1456,7 @@ notice that numebrs 16 form the 42
 +   +   +---+---+   +---+---+---+   +
 |   |             .   .   .   E     |
 +---+---+---+---+---+---+---+---+---+
-
+```
 ---
 
 # 🔷 The “42” Problem: Why the Blue Blocks Break — and How They Become Whole
@@ -1530,6 +1626,7 @@ After:
 - Isolated blue pixels
 - Visual noise
 
+```text
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
 ⬛🟦🟩🟩🟩🟩🟩🟩🟩🟩⬛⬜⬜⬜⬜⬜⬜⬜⬛
 ⬛⬛⬛⬛⬛⬜⬛⬛⬛🟩⬛⬛⬛⬛⬛⬛⬛⬜⬛
@@ -1545,12 +1642,14 @@ After:
 ⬛⬜⬛⬜⬛⬛⬛⬛⬛🟩⬛⬛⬛⬛⬛⬛⬛⬜⬛
 ⬛⬜⬛⬜⬜⬜⬜⬜⬜🟩🟩🟩🟩🟩🟩🟪⬜⬜⬛
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+```
 
 ### After
 - Smooth, continuous “42”
 - Clear digit shapes
 - Cohesive structure embedded inside the maze
 
+```text
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
 ⬛🟦🟩🟩🟩🟩🟩🟩🟩🟩⬛⬜⬜⬜⬜⬜⬜⬜⬛
 ⬛⬛⬛⬛⬛⬜⬛⬛⬛🟩⬛⬛⬛⬛⬛⬛⬛⬜⬛
@@ -1566,6 +1665,7 @@ After:
 ⬛⬜⬛⬜⬛⬛⬛⬛⬛🟩⬛⬛⬛⬛⬛⬛⬛⬜⬛
 ⬛⬜⬛⬜⬜⬜⬜⬜⬜🟩🟩🟩🟩🟩🟩🟪⬜⬜⬛
 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+```
 
 ---
 
