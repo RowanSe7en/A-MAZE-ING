@@ -386,7 +386,7 @@ class MazeGenerator:
                                     not (self.maze[y - i][x] & wall)):
                                 empty += 1
 
-                    if empty < 3:
+                    if empty < 2:
 
                         self.maze[y][x] &= ~wall
                         self.maze[ny][nx] &= ~MazeGenerator.opposite[wall]
